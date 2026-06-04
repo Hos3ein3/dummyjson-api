@@ -1,0 +1,15 @@
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/bin/Debug/net9.0/DummyJson.Application.deps.json
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/bin/Debug/net9.0/DummyJson.Application.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/bin/Debug/net9.0/DummyJson.Application.pdb
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/bin/Debug/net9.0/DummyJson.Domain.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/bin/Debug/net9.0/DummyJson.Domain.pdb
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.csproj.AssemblyReference.cache
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.AssemblyInfoInputs.cache
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.AssemblyInfo.cs
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.csproj.CoreCompileInputs.cache
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJso.F8DE507C.Up2Date
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/refint/DummyJson.Application.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.pdb
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/ref/DummyJson.Application.dll

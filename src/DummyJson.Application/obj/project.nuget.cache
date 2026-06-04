@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "dgSpecHash": "vQayxyG5PpE=",
+  "success": true,
+  "projectFilePath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/DummyJson.Application.csproj",
+  "expectedPackageFiles": [
+    "/Users/mohammadhosein/.nuget/packages/fluentvalidation/11.11.0/fluentvalidation.11.11.0.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/fluentvalidation.dependencyinjectionextensions/11.11.0/fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/mapster/7.4.0/mapster.7.4.0.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/mapster.core/1.2.1/mapster.core.1.2.1.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/mapster.dependencyinjection/1.0.1/mapster.dependencyinjection.1.0.1.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.5/microsoft.extensions.dependencyinjection.abstractions.9.0.5.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/microsoft.extensions.dependencymodel/8.0.2/microsoft.extensions.dependencymodel.8.0.2.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/microsoft.extensions.localization.abstractions/10.0.8/microsoft.extensions.localization.abstractions.10.0.8.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/microsoft.extensions.logging.abstractions/9.0.5/microsoft.extensions.logging.abstractions.9.0.5.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/refit/8.0.0/refit.8.0.0.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/scrutor/5.0.2/scrutor.5.0.2.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/microsoft.netcore.app.ref/9.0.14/microsoft.netcore.app.ref.9.0.14.nupkg.sha512",
+    "/Users/mohammadhosein/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.14/microsoft.aspnetcore.app.ref.9.0.14.nupkg.sha512"
+  ],
+  "logs": []
+}

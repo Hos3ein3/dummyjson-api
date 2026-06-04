@@ -1,0 +1,7 @@
+{
+  "DummyJson.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/Users\/mohammadhosein\/Development\/DUMMYJson\/DummyJson-API2\/src\/DummyJson.API",
+  "DummyJson.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/Users\/mohammadhosein\/Development\/DUMMYJson\/DummyJson-API2\/src\/DummyJson.Application",
+  "DummyJson.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/Users\/mohammadhosein\/Development\/DUMMYJson\/DummyJson-API2\/src\/DummyJson.Domain",
+  "DummyJson.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/Users\/mohammadhosein\/Development\/DUMMYJson\/DummyJson-API2\/src\/DummyJson.Infrastructure",
+  "DummyJson.Persistence, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/Users\/mohammadhosein\/Development\/DUMMYJson\/DummyJson-API2\/src\/DummyJson.Persistence"
+}

@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DummyJson.API/DummyJson.API.csproj" />
+    <Project Path="src/DummyJson.Application/DummyJson.Application.csproj" />
+    <Project Path="src/DummyJson.Domain/DummyJson.Domain.csproj" />
+    <Project Path="src/DummyJson.Infrastructure/DummyJson.Infrastructure.csproj" />
+    <Project Path="src/DummyJson.Persistence/DummyJson.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DummyJson.ArchitectureTests/DummyJson.ArchitectureTests.csproj" />
+    <Project Path="tests/DummyJson.IntegrationTests/DummyJson.IntegrationTests.csproj" />
+    <Project Path="tests/DummyJson.UnitTests/DummyJson.UnitTests.csproj" />
+  </Folder>
+</Solution>

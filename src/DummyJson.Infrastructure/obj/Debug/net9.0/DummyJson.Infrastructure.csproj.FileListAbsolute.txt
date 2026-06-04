@@ -1,0 +1,17 @@
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/bin/Debug/net9.0/DummyJson.Infrastructure.deps.json
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/bin/Debug/net9.0/DummyJson.Infrastructure.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/bin/Debug/net9.0/DummyJson.Infrastructure.pdb
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/bin/Debug/net9.0/DummyJson.Application.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/bin/Debug/net9.0/DummyJson.Domain.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/bin/Debug/net9.0/DummyJson.Application.pdb
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/bin/Debug/net9.0/DummyJson.Domain.pdb
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/DummyJson.Infrastructure.csproj.AssemblyReference.cache
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/DummyJson.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/DummyJson.Infrastructure.AssemblyInfoInputs.cache
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/DummyJson.Infrastructure.AssemblyInfo.cs
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/DummyJson.Infrastructure.csproj.CoreCompileInputs.cache
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/DummyJso.C6479C3F.Up2Date
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/DummyJson.Infrastructure.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/refint/DummyJson.Infrastructure.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/DummyJson.Infrastructure.pdb
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/Debug/net9.0/ref/DummyJson.Infrastructure.dll

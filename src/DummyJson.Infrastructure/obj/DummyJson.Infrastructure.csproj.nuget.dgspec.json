@@ -1,0 +1,564 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/DummyJson.Infrastructure.csproj": {}
+  },
+  "projects": {
+    "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/DummyJson.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/DummyJson.Application.csproj",
+        "projectName": "DummyJson.Application",
+        "projectPath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/DummyJson.Application.csproj",
+        "packagesPath": "/Users/mohammadhosein/.nuget/packages/",
+        "outputPath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "configFilePaths": [
+          "/Users/mohammadhosein/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/DummyJson.Domain.csproj": {
+                "projectPath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/DummyJson.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[11.11.0, )",
+              "versionCentrallyManaged": true
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.11.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Mapster": {
+              "target": "Package",
+              "version": "[7.4.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Mapster.DependencyInjection": {
+              "target": "Package",
+              "version": "[1.0.1, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.5, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.Extensions.Localization.Abstractions": {
+              "target": "Package",
+              "version": "[10.0.8, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.5, )",
+              "versionCentrallyManaged": true
+            },
+            "Refit": {
+              "target": "Package",
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Scrutor": {
+              "target": "Package",
+              "version": "[5.0.2, )",
+              "versionCentrallyManaged": true
+            }
+          },
+          "centralPackageVersions": {
+            "Asp.Versioning.Http": "8.1.0",
+            "Asp.Versioning.Mvc": "8.1.0",
+            "Asp.Versioning.Mvc.ApiExplorer": "8.1.0",
+            "AspNetCore.HealthChecks.MongoDb": "9.0.0",
+            "AspNetCore.HealthChecks.Npgsql": "9.0.0",
+            "AspNetCore.HealthChecks.UI": "9.0.0",
+            "AspNetCore.HealthChecks.UI.Client": "9.0.0",
+            "AspNetCore.HealthChecks.UI.InMemory.Storage": "9.0.0",
+            "AutoFixture": "4.18.1",
+            "Bogus": "35.6.1",
+            "coverlet.collector": "6.0.4",
+            "FFMpegCore": "5.4.0",
+            "FluentAssertions": "7.0.0",
+            "FluentValidation": "11.11.0",
+            "FluentValidation.DependencyInjectionExtensions": "11.11.0",
+            "Hangfire.AspNetCore": "1.8.23",
+            "Hangfire.InMemory": "1.0.0",
+            "Humanizer": "3.0.10",
+            "Mapster": "7.4.0",
+            "Mapster.DependencyInjection": "1.0.1",
+            "Microsoft.AspNetCore.Authentication.Google": "9.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
+            "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
+            "Microsoft.AspNetCore.OpenApi": "9.0.5",
+            "Microsoft.EntityFrameworkCore": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Design": "9.0.5",
+            "Microsoft.EntityFrameworkCore.InMemory": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
+            "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
+            "Microsoft.Extensions.Caching.Hybrid": "9.0.0-preview.9.24556.4",
+            "Microsoft.Extensions.Caching.StackExchangeRedis": "9.0.0",
+            "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
+            "Microsoft.Extensions.Http.Resilience": "9.0.0",
+            "Microsoft.Extensions.Localization.Abstractions": "10.0.8",
+            "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
+            "Microsoft.FeatureManagement.AspNetCore": "4.0.0",
+            "Microsoft.IdentityModel.Tokens": "8.9.0",
+            "Microsoft.NET.Test.Sdk": "17.13.0",
+            "MongoDB.Driver": "3.4.0",
+            "Moq": "4.20.72",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
+            "Polly.Core": "8.5.0",
+            "Quartz.Extensions.Hosting": "3.18.1",
+            "Refit": "8.0.0",
+            "Refit.HttpClientFactory": "8.0.0",
+            "Scalar.AspNetCore": "2.6.0",
+            "Scrutor": "5.0.2",
+            "Serilog.AspNetCore": "9.0.0",
+            "Serilog.Enrichers.Environment": "3.0.1",
+            "Serilog.Sinks.Console": "6.0.0",
+            "Serilog.Sinks.File": "7.0.0",
+            "Serilog.Sinks.Seq": "9.1.0",
+            "Shouldly": "4.2.1",
+            "SixLabors.ImageSharp": "2.1.9",
+            "StackExchange.Redis": "2.8.41",
+            "System.IdentityModel.Tokens.Jwt": "8.9.0",
+            "Testcontainers": "4.4.0",
+            "Testcontainers.PostgreSql": "4.4.0",
+            "TickerQ": "9.3.0",
+            "tusdotnet": "2.11.1",
+            "UnitsNet": "5.75.0",
+            "xunit": "2.9.3",
+            "xunit.runner.visualstudio": "2.8.2"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/DummyJson.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/DummyJson.Domain.csproj",
+        "projectName": "DummyJson.Domain",
+        "projectPath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/DummyJson.Domain.csproj",
+        "packagesPath": "/Users/mohammadhosein/.nuget/packages/",
+        "outputPath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "configFilePaths": [
+          "/Users/mohammadhosein/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "centralPackageVersions": {
+            "Asp.Versioning.Http": "8.1.0",
+            "Asp.Versioning.Mvc": "8.1.0",
+            "Asp.Versioning.Mvc.ApiExplorer": "8.1.0",
+            "AspNetCore.HealthChecks.MongoDb": "9.0.0",
+            "AspNetCore.HealthChecks.Npgsql": "9.0.0",
+            "AspNetCore.HealthChecks.UI": "9.0.0",
+            "AspNetCore.HealthChecks.UI.Client": "9.0.0",
+            "AspNetCore.HealthChecks.UI.InMemory.Storage": "9.0.0",
+            "AutoFixture": "4.18.1",
+            "Bogus": "35.6.1",
+            "coverlet.collector": "6.0.4",
+            "FFMpegCore": "5.4.0",
+            "FluentAssertions": "7.0.0",
+            "FluentValidation": "11.11.0",
+            "FluentValidation.DependencyInjectionExtensions": "11.11.0",
+            "Hangfire.AspNetCore": "1.8.23",
+            "Hangfire.InMemory": "1.0.0",
+            "Humanizer": "3.0.10",
+            "Mapster": "7.4.0",
+            "Mapster.DependencyInjection": "1.0.1",
+            "Microsoft.AspNetCore.Authentication.Google": "9.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
+            "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
+            "Microsoft.AspNetCore.OpenApi": "9.0.5",
+            "Microsoft.EntityFrameworkCore": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Design": "9.0.5",
+            "Microsoft.EntityFrameworkCore.InMemory": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
+            "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
+            "Microsoft.Extensions.Caching.Hybrid": "9.0.0-preview.9.24556.4",
+            "Microsoft.Extensions.Caching.StackExchangeRedis": "9.0.0",
+            "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
+            "Microsoft.Extensions.Http.Resilience": "9.0.0",
+            "Microsoft.Extensions.Localization.Abstractions": "10.0.8",
+            "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
+            "Microsoft.FeatureManagement.AspNetCore": "4.0.0",
+            "Microsoft.IdentityModel.Tokens": "8.9.0",
+            "Microsoft.NET.Test.Sdk": "17.13.0",
+            "MongoDB.Driver": "3.4.0",
+            "Moq": "4.20.72",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
+            "Polly.Core": "8.5.0",
+            "Quartz.Extensions.Hosting": "3.18.1",
+            "Refit": "8.0.0",
+            "Refit.HttpClientFactory": "8.0.0",
+            "Scalar.AspNetCore": "2.6.0",
+            "Scrutor": "5.0.2",
+            "Serilog.AspNetCore": "9.0.0",
+            "Serilog.Enrichers.Environment": "3.0.1",
+            "Serilog.Sinks.Console": "6.0.0",
+            "Serilog.Sinks.File": "7.0.0",
+            "Serilog.Sinks.Seq": "9.1.0",
+            "Shouldly": "4.2.1",
+            "SixLabors.ImageSharp": "2.1.9",
+            "StackExchange.Redis": "2.8.41",
+            "System.IdentityModel.Tokens.Jwt": "8.9.0",
+            "Testcontainers": "4.4.0",
+            "Testcontainers.PostgreSql": "4.4.0",
+            "TickerQ": "9.3.0",
+            "tusdotnet": "2.11.1",
+            "UnitsNet": "5.75.0",
+            "xunit": "2.9.3",
+            "xunit.runner.visualstudio": "2.8.2"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/DummyJson.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/DummyJson.Infrastructure.csproj",
+        "projectName": "DummyJson.Infrastructure",
+        "projectPath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/DummyJson.Infrastructure.csproj",
+        "packagesPath": "/Users/mohammadhosein/.nuget/packages/",
+        "outputPath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "configFilePaths": [
+          "/Users/mohammadhosein/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/DummyJson.Application.csproj": {
+                "projectPath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/DummyJson.Application.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "FFMpegCore": {
+              "target": "Package",
+              "version": "[5.4.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Hangfire.AspNetCore": {
+              "target": "Package",
+              "version": "[1.8.23, )",
+              "versionCentrallyManaged": true
+            },
+            "Hangfire.InMemory": {
+              "target": "Package",
+              "version": "[1.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.Authentication.Google": {
+              "target": "Package",
+              "version": "[9.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.5, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.5, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.FeatureManagement.AspNetCore": {
+              "target": "Package",
+              "version": "[4.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.9.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Quartz.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[3.18.1, )",
+              "versionCentrallyManaged": true
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Serilog.Enrichers.Environment": {
+              "target": "Package",
+              "version": "[3.0.1, )",
+              "versionCentrallyManaged": true
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[6.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[7.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[2.1.9, )",
+              "versionCentrallyManaged": true
+            },
+            "StackExchange.Redis": {
+              "target": "Package",
+              "version": "[2.8.41, )",
+              "versionCentrallyManaged": true
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.9.0, )",
+              "versionCentrallyManaged": true
+            },
+            "TickerQ": {
+              "target": "Package",
+              "version": "[9.3.0, )",
+              "versionCentrallyManaged": true
+            }
+          },
+          "centralPackageVersions": {
+            "Asp.Versioning.Http": "8.1.0",
+            "Asp.Versioning.Mvc": "8.1.0",
+            "Asp.Versioning.Mvc.ApiExplorer": "8.1.0",
+            "AspNetCore.HealthChecks.MongoDb": "9.0.0",
+            "AspNetCore.HealthChecks.Npgsql": "9.0.0",
+            "AspNetCore.HealthChecks.UI": "9.0.0",
+            "AspNetCore.HealthChecks.UI.Client": "9.0.0",
+            "AspNetCore.HealthChecks.UI.InMemory.Storage": "9.0.0",
+            "AutoFixture": "4.18.1",
+            "Bogus": "35.6.1",
+            "coverlet.collector": "6.0.4",
+            "FFMpegCore": "5.4.0",
+            "FluentAssertions": "7.0.0",
+            "FluentValidation": "11.11.0",
+            "FluentValidation.DependencyInjectionExtensions": "11.11.0",
+            "Hangfire.AspNetCore": "1.8.23",
+            "Hangfire.InMemory": "1.0.0",
+            "Humanizer": "3.0.10",
+            "Mapster": "7.4.0",
+            "Mapster.DependencyInjection": "1.0.1",
+            "Microsoft.AspNetCore.Authentication.Google": "9.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.5",
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.5",
+            "Microsoft.AspNetCore.Mvc.Testing": "9.0.5",
+            "Microsoft.AspNetCore.OpenApi": "9.0.5",
+            "Microsoft.EntityFrameworkCore": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Design": "9.0.5",
+            "Microsoft.EntityFrameworkCore.InMemory": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Relational": "9.0.5",
+            "Microsoft.EntityFrameworkCore.SqlServer": "9.0.5",
+            "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
+            "Microsoft.Extensions.Caching.Hybrid": "9.0.0-preview.9.24556.4",
+            "Microsoft.Extensions.Caching.StackExchangeRedis": "9.0.0",
+            "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
+            "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
+            "Microsoft.Extensions.Http.Resilience": "9.0.0",
+            "Microsoft.Extensions.Localization.Abstractions": "10.0.8",
+            "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
+            "Microsoft.FeatureManagement.AspNetCore": "4.0.0",
+            "Microsoft.IdentityModel.Tokens": "8.9.0",
+            "Microsoft.NET.Test.Sdk": "17.13.0",
+            "MongoDB.Driver": "3.4.0",
+            "Moq": "4.20.72",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
+            "Polly.Core": "8.5.0",
+            "Quartz.Extensions.Hosting": "3.18.1",
+            "Refit": "8.0.0",
+            "Refit.HttpClientFactory": "8.0.0",
+            "Scalar.AspNetCore": "2.6.0",
+            "Scrutor": "5.0.2",
+            "Serilog.AspNetCore": "9.0.0",
+            "Serilog.Enrichers.Environment": "3.0.1",
+            "Serilog.Sinks.Console": "6.0.0",
+            "Serilog.Sinks.File": "7.0.0",
+            "Serilog.Sinks.Seq": "9.1.0",
+            "Shouldly": "4.2.1",
+            "SixLabors.ImageSharp": "2.1.9",
+            "StackExchange.Redis": "2.8.41",
+            "System.IdentityModel.Tokens.Jwt": "8.9.0",
+            "Testcontainers": "4.4.0",
+            "Testcontainers.PostgreSql": "4.4.0",
+            "TickerQ": "9.3.0",
+            "tusdotnet": "2.11.1",
+            "UnitsNet": "5.75.0",
+            "xunit": "2.9.3",
+            "xunit.runner.visualstudio": "2.8.2"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.201/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
