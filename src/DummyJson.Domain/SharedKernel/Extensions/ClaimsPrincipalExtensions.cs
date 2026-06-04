@@ -44,4 +44,15 @@ public static class ClaimsPrincipalExtensions
     {
         return principal.FindFirst(ClaimTypes.MobilePhone)?.Value;
     }
+
+    public static bool IsAuthenticated(this ClaimsPrincipal principal)
+    {
+        return principal.Identity?.IsAuthenticated == true;
+    }
+
+    public static void ForceAuthenticated(this ClaimsPrincipal principal)
+    {
+        if (!principal.IsAuthenticated())
+            throw new UnauthorizedAccessException("User is not authenticated.");
+    }
 }

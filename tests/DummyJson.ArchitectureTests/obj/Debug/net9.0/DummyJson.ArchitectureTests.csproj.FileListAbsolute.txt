@@ -445,3 +445,17 @@
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/obj/Debug/net9.0/DummyJson.ArchitectureTests.pdb
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/obj/Debug/net9.0/DummyJson.ArchitectureTests.genruntimeconfig.cache
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/obj/Debug/net9.0/ref/DummyJson.ArchitectureTests.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/StronglyConnectedComponents.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/JetBrains.Annotations.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/Mono.Cecil.Mdb.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/Mono.Cecil.Pdb.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/Mono.Cecil.Rocks.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/Mono.Cecil.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/ArchUnitNET.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/ArchUnitNET.xUnit.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/HealthChecks.MySql.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/HealthChecks.Redis.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/BouncyCastle.Cryptography.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/MailKit.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/MimeKit.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.ArchitectureTests/bin/Debug/net9.0/Twilio.dll

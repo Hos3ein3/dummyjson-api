@@ -111,6 +111,13 @@ public sealed class CurrentUserService : ICurrentUserService
     public bool IsAuthenticated
         => Principal?.Identity?.IsAuthenticated is true;
 
+    /// <inheritdoc/>
+    public void ForceAuthenticated()
+    {
+        if (!IsAuthenticated)
+            throw new UnauthorizedAccessException("The current request is not authenticated. Ensure the endpoint is protected with [Authorize].");
+    }
+
     /// <summary>
     /// Checks whether the current user has the given role (case-insensitive).
     /// Returns <c>false</c> for unauthenticated requests.

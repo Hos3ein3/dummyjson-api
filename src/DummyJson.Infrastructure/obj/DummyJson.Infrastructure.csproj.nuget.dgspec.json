@@ -100,7 +100,9 @@
             "Asp.Versioning.Mvc": "8.1.0",
             "Asp.Versioning.Mvc.ApiExplorer": "8.1.0",
             "AspNetCore.HealthChecks.MongoDb": "9.0.0",
+            "AspNetCore.HealthChecks.MySql": "9.0.0",
             "AspNetCore.HealthChecks.Npgsql": "9.0.0",
+            "AspNetCore.HealthChecks.Redis": "9.0.0",
             "AspNetCore.HealthChecks.UI": "9.0.0",
             "AspNetCore.HealthChecks.UI.Client": "9.0.0",
             "AspNetCore.HealthChecks.UI.InMemory.Storage": "9.0.0",
@@ -116,6 +118,7 @@
             "Hangfire.AspNetCore": "1.8.23",
             "Hangfire.InMemory": "1.0.0",
             "Humanizer": "3.0.10",
+            "MailKit": "4.17.0",
             "Mapster": "7.4.0",
             "Mapster.DependencyInjection": "1.0.1",
             "Microsoft.AspNetCore.Authentication.Google": "9.0.0",
@@ -160,7 +163,9 @@
             "Testcontainers": "4.4.0",
             "Testcontainers.PostgreSql": "4.4.0",
             "TickerQ": "9.3.0",
+            "TngTech.ArchUnitNET.xUnit": "0.11.1",
             "tusdotnet": "2.11.1",
+            "Twilio": "7.14.9",
             "UnitsNet": "5.75.0",
             "xunit": "2.9.3",
             "xunit.runner.visualstudio": "2.8.2"
@@ -240,7 +245,9 @@
             "Asp.Versioning.Mvc": "8.1.0",
             "Asp.Versioning.Mvc.ApiExplorer": "8.1.0",
             "AspNetCore.HealthChecks.MongoDb": "9.0.0",
+            "AspNetCore.HealthChecks.MySql": "9.0.0",
             "AspNetCore.HealthChecks.Npgsql": "9.0.0",
+            "AspNetCore.HealthChecks.Redis": "9.0.0",
             "AspNetCore.HealthChecks.UI": "9.0.0",
             "AspNetCore.HealthChecks.UI.Client": "9.0.0",
             "AspNetCore.HealthChecks.UI.InMemory.Storage": "9.0.0",
@@ -256,6 +263,7 @@
             "Hangfire.AspNetCore": "1.8.23",
             "Hangfire.InMemory": "1.0.0",
             "Humanizer": "3.0.10",
+            "MailKit": "4.17.0",
             "Mapster": "7.4.0",
             "Mapster.DependencyInjection": "1.0.1",
             "Microsoft.AspNetCore.Authentication.Google": "9.0.0",
@@ -300,7 +308,9 @@
             "Testcontainers": "4.4.0",
             "Testcontainers.PostgreSql": "4.4.0",
             "TickerQ": "9.3.0",
+            "TngTech.ArchUnitNET.xUnit": "0.11.1",
             "tusdotnet": "2.11.1",
+            "Twilio": "7.14.9",
             "UnitsNet": "5.75.0",
             "xunit": "2.9.3",
             "xunit.runner.visualstudio": "2.8.2"
@@ -395,6 +405,11 @@
               "version": "[1.0.0, )",
               "versionCentrallyManaged": true
             },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.17.0, )",
+              "versionCentrallyManaged": true
+            },
             "Microsoft.AspNetCore.Authentication.Google": {
               "target": "Package",
               "version": "[9.0.0, )",
@@ -464,6 +479,11 @@
               "target": "Package",
               "version": "[9.3.0, )",
               "versionCentrallyManaged": true
+            },
+            "Twilio": {
+              "target": "Package",
+              "version": "[7.14.9, )",
+              "versionCentrallyManaged": true
             }
           },
           "centralPackageVersions": {
@@ -471,7 +491,9 @@
             "Asp.Versioning.Mvc": "8.1.0",
             "Asp.Versioning.Mvc.ApiExplorer": "8.1.0",
             "AspNetCore.HealthChecks.MongoDb": "9.0.0",
+            "AspNetCore.HealthChecks.MySql": "9.0.0",
             "AspNetCore.HealthChecks.Npgsql": "9.0.0",
+            "AspNetCore.HealthChecks.Redis": "9.0.0",
             "AspNetCore.HealthChecks.UI": "9.0.0",
             "AspNetCore.HealthChecks.UI.Client": "9.0.0",
             "AspNetCore.HealthChecks.UI.InMemory.Storage": "9.0.0",
@@ -487,6 +509,7 @@
             "Hangfire.AspNetCore": "1.8.23",
             "Hangfire.InMemory": "1.0.0",
             "Humanizer": "3.0.10",
+            "MailKit": "4.17.0",
             "Mapster": "7.4.0",
             "Mapster.DependencyInjection": "1.0.1",
             "Microsoft.AspNetCore.Authentication.Google": "9.0.0",
@@ -531,7 +554,9 @@
             "Testcontainers": "4.4.0",
             "Testcontainers.PostgreSql": "4.4.0",
             "TickerQ": "9.3.0",
+            "TngTech.ArchUnitNET.xUnit": "0.11.1",
             "tusdotnet": "2.11.1",
+            "Twilio": "7.14.9",
             "UnitsNet": "5.75.0",
             "xunit": "2.9.3",
             "xunit.runner.visualstudio": "2.8.2"

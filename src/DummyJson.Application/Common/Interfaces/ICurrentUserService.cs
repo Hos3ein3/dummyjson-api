@@ -22,6 +22,11 @@ public interface ICurrentUserService
     bool IsAuthenticated { get; }
 
     /// <summary>
+    /// Throws an UnauthorizedAccessException if the user is not authenticated.
+    /// </summary>
+    void ForceAuthenticated();
+
+    /// <summary>
     /// Returns <c>true</c> if the current user has the specified role.
     /// Case-insensitive. Returns <c>false</c> for unauthenticated requests.
     /// </summary>

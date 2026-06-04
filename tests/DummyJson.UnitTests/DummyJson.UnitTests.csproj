@@ -11,6 +11,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">
@@ -27,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\DummyJson.Application\DummyJson.Application.csproj" />
     <ProjectReference Include="..\..\src\DummyJson.Domain\DummyJson.Domain.csproj" />
+    <ProjectReference Include="..\..\src\DummyJson.Persistence\DummyJson.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,6 +6,7 @@ using DummyJson.Infrastructure.Auth;
 using DummyJson.Infrastructure.Caching;
 using DummyJson.Infrastructure.Events;
 using DummyJson.Infrastructure.Identity;
+using DummyJson.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,7 +63,14 @@ public static class DependencyInjection
         // ── Event Dispatchers ─────────────────────────────────────────────────
         services.AddScoped<IntegrationEventDispatcher>();
         
+        // ── Infrastructure Services ───────────────────────────────────────────
+        services.Configure<EmailSettings>(configuration.GetSection(EmailSettings.SectionName));
+        services.Configure<SmsSettings>(configuration.GetSection(SmsSettings.SectionName));
+        
         services.AddScoped<IFileService, DummyJson.Infrastructure.Services.FileService>();
+        services.AddTransient<IEmailService, EmailService>();
+        services.AddTransient<ISmsService, SmsService>();
+        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
         // ── Caching Services ──────────────────────────────────────────────────
         services.AddMemoryCache();

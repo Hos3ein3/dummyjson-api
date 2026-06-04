@@ -65,6 +65,14 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, Applicatio
                 var lambda = System.Linq.Expressions.Expression.Lambda(notDeleted, parameter);
                 builder.Entity(entityType.ClrType).HasQueryFilter(lambda);
             }
+
+            // Global Optimistic Concurrency configuration
+            if (typeof(IConcurrent).IsAssignableFrom(entityType.ClrType))
+            {
+                builder.Entity(entityType.ClrType)
+                    .Property(nameof(IConcurrent.ConcurrencyStamp))
+                    .IsConcurrencyToken();
+            }
         }
     }
 

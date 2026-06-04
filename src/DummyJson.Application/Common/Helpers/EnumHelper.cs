@@ -29,4 +29,14 @@ public static class EnumHelper
         }
         return dictionary;
     }
+
+    public static List<SelectListItemHelper> GetSelectListItems<TEnum>(IEnumerable<int>? selectedValues = null) where TEnum : struct, Enum
+    {
+        return SelectListItemHelper.FromEnum<TEnum>(selectedValues);
+    }
+
+    public static List<SelectListItemHelper> GetSelectListItems<TEnum>(int selectedValue) where TEnum : struct, Enum
+    {
+        return SelectListItemHelper.FromEnum<TEnum>(selectedValue);
+    }
 }

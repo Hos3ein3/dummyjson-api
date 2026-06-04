@@ -9,6 +9,7 @@
     <PackageReference Include="FFMpegCore" />
     <PackageReference Include="Hangfire.AspNetCore" />
     <PackageReference Include="Hangfire.InMemory" />
+    <PackageReference Include="MailKit" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
@@ -23,16 +24,11 @@
     <PackageReference Include="Serilog.Enrichers.Environment" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" />
     <PackageReference Include="TickerQ" />
+    <PackageReference Include="Twilio" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DummyJson.Application\DummyJson.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="..\..\.dockerignore">
-      <Link>.dockerignore</Link>
-    </Content>
   </ItemGroup>
 
 </Project>

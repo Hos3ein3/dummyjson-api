@@ -20,6 +20,9 @@ public static class DependencyInjection
         // ── Dispatcher ────────────────────────────────────────────────────────
         services.AddScoped<IDispatcher, Dispatcher>();
 
+        // ── Generic Service ───────────────────────────────────────────────────
+        services.AddScoped(typeof(DummyJson.Application.Common.Interfaces.IGenericService<,>), typeof(DummyJson.Application.Common.Services.GenericService<,>));
+
         // ── Mapster ───────────────────────────────────────────────────────────
         var config = TypeAdapterConfig.GlobalSettings;
         config.Scan(Assembly.GetExecutingAssembly());

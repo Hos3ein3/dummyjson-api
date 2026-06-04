@@ -106,13 +106,15 @@ try
         });
     });
 
-    // ── HTTP Context ──────────────────────────────────────────────────────────
+    // ── HTTP Context & Exceptions ─────────────────────────────────────────────
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddProblemDetails();
+    builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
     // ── Health Checks ─────────────────────────────────────────────────────────
     builder.Services.AddHealthChecks()
-        .AddNpgSql(builder.Configuration.GetConnectionString("PostgreSQL") ?? "", name: "PostgreSQL");
+        .AddMySql(builder.Configuration.GetConnectionString("DefaultConnection") ?? "", name: "MySQL")
+        .AddRedis(builder.Configuration.GetConnectionString("Redis") ?? "", name: "Redis");
     
     builder.Services.AddHealthChecksUI(options =>
     {
@@ -171,7 +173,7 @@ try
     }
 
     // ── Pipeline ──────────────────────────────────────────────────────────────
-    app.UseMiddleware<ExceptionHandlingMiddleware>();
+    app.UseExceptionHandler(); // Maps to IExceptionHandler / ProblemDetails
     app.UseMiddleware<RequestContextMiddleware>();
     app.UseSerilogRequestLogging();
     app.UseHttpsRedirection();
@@ -213,7 +215,6 @@ try
         }
     });
 
-    app.UseExceptionHandler();
 
     if (app.Environment.IsDevelopment())
     {
