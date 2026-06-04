@@ -1,5 +1,8 @@
+using DummyJson.Application.Common.Interfaces;
+using DummyJson.Application.Common.Repository;
 using DummyJson.Application.Common.UnitOfWork;
 using DummyJson.Persistence.Context;
+using DummyJson.Persistence.Repositories;
 using DummyJson.Persistence.Seeding;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -58,7 +61,19 @@ public static class DependencyInjection
 
         services.AddScoped(typeof(DummyJson.Application.Common.Interfaces.IMongoRepository<>), typeof(Repositories.MongoRepository<>));
 
-        // ── Data Seeder ───────────────────────────────────────────────────────────& Auth
+        // ── Database & Repository Factories ───────────────────────────────────────
+        services.AddScoped<IDatabaseFactory, DatabaseFactory>();
+        services.AddScoped<IRepositoryFactory, RepositoryFactory>();
+
+        // ── Domain-specific repositories (Scoped, lazy-instantiated via RepositoryFactory) ─
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ICartRepository, CartRepository>();
+        services.AddScoped<ITodoRepository, TodoRepository>();
+        services.AddScoped<IQuoteRepository, QuoteRepository>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<IRecipeRepository, RecipeRepository>();
+
+        // ── Data Seeder ─────────────────────────────────────────────────────────── & Auth
         services.AddScoped<DataSeeder>();
         services.AddScoped<DummyJson.Application.Auth.Services.IRefreshTokenService, DummyJson.Persistence.Identity.RefreshTokenService>();
 

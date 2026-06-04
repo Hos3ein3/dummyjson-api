@@ -40,6 +40,18 @@ public interface IRepository<TEntity, TId>
     /// <summary>Adds a collection of entities.</summary>
     Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Efficiently inserts a large batch of entities in a single database round-trip.
+    /// Bypasses EF Core change-tracking — no SaveChangesAsync needed.
+    /// </summary>
+    Task BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Efficiently updates a large batch of entities in a single database round-trip.
+    /// Bypasses EF Core change-tracking — no SaveChangesAsync needed.
+    /// </summary>
+    Task BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+
     /// <summary>Marks an entity as modified. EF Core tracks changes automatically.</summary>
     void Update(TEntity entity);
 

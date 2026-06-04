@@ -1,0 +1,49 @@
+﻿services:
+  dummyjson.api:
+    image: dummyjson.api
+    build:
+      context: .
+      dockerfile: src/DummyJson.API/Dockerfile
+
+  dummyjson.application:
+    image: dummyjson.application
+    build:
+      context: .
+      dockerfile: src/DummyJson.Application/Dockerfile
+
+  dummyjson.architecturetests:
+    image: dummyjson.architecturetests
+    build:
+      context: .
+      dockerfile: tests/DummyJson.ArchitectureTests/Dockerfile
+
+  dummyjson.domain:
+    image: dummyjson.domain
+    build:
+      context: .
+      dockerfile: src/DummyJson.Domain/Dockerfile
+
+  dummyjson.infrastructure:
+    image: dummyjson.infrastructure
+    build:
+      context: .
+      dockerfile: src/DummyJson.Infrastructure/Dockerfile
+
+  dummyjson.integrationtests:
+    image: dummyjson.integrationtests
+    build:
+      context: .
+      dockerfile: tests/DummyJson.IntegrationTests/Dockerfile
+
+  dummyjson.persistence:
+    image: dummyjson.persistence
+    build:
+      context: .
+      dockerfile: src/DummyJson.Persistence/Dockerfile
+
+  dummyjson.unittests:
+    image: dummyjson.unittests
+    build:
+      context: .
+      dockerfile: tests/DummyJson.UnitTests/Dockerfile
+

@@ -157,9 +157,17 @@ try
     {
         using var scope = app.Services.CreateScope();
         var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+
         var seedPath = app.Configuration.GetValue<string>("SeedDataPath")
             ?? Path.Combine(Directory.GetCurrentDirectory(), "SeedData");
-        await seeder.SeedAsync(seedPath);
+
+        // Resolve wwwroot — falls back gracefully if WebRootPath is not set
+        var wwwRoot = app.Environment.WebRootPath
+            ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+        var seedImages = app.Configuration.GetValue<bool>("SeedImages");
+
+        await seeder.SeedAsync(seedPath, wwwRoot, seedImages);
     }
 
     // ── Pipeline ──────────────────────────────────────────────────────────────

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <AssemblyName>DummyJson.API</AssemblyName>
     <RootNamespace>DummyJson.API</RootNamespace>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>

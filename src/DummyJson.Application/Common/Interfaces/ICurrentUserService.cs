@@ -17,4 +17,13 @@ public interface ICurrentUserService
     string? UserEmail { get; }
     string? Username { get; }
     string? UserPhoneNumber { get; }
+
+    /// <summary>True when the current request carries a valid, authenticated identity.</summary>
+    bool IsAuthenticated { get; }
+
+    /// <summary>
+    /// Returns <c>true</c> if the current user has the specified role.
+    /// Case-insensitive. Returns <c>false</c> for unauthenticated requests.
+    /// </summary>
+    bool IsInRole(string role);
 }

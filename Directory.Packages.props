@@ -4,6 +4,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- EF Core & Databases -->
+    <PackageVersion Include="EFCore.BulkExtensions" Version="8.1.2" />
+    <PackageVersion Include="EFCore.BulkExtensions.PostgreSql" Version="8.1.2" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />

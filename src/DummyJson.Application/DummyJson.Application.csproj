@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>DummyJson.Application</AssemblyName>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DummyJson.Domain\DummyJson.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
 </Project>

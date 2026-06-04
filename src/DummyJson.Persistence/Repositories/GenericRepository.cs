@@ -2,6 +2,7 @@ using DummyJson.Application.Common.Repository;
 using DummyJson.Domain.Common.Interfaces;
 using DummyJson.Domain.Common.Primitives;
 using DummyJson.Persistence.Context;
+using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Results;
 
@@ -68,6 +69,42 @@ public class GenericRepository<TEntity, TId> : IRepository<TEntity, TId>
 
     public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
         => await _dbSet.AddRangeAsync(entities, cancellationToken);
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Performs a true SQL bulk insert bypassing EF Core change-tracking.
+    /// <c>SaveChangesAsync</c> is NOT required after this call.
+    /// Entities must already have their primary keys set (Guid.CreateVersion7()).
+    /// Audit fields (CreatedAt, ConcurrencyStamp) must be populated before calling.
+    /// </remarks>
+    public virtual async Task BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    {
+        var list = entities as List<TEntity> ?? entities.ToList();
+        if (list.Count == 0) return;
+
+        var config = new BulkConfig
+        {
+            BatchSize = 500,
+            SetOutputIdentity = false,
+            PreserveInsertOrder = true
+        };
+
+        await _context.BulkInsertAsync(list, config, cancellationToken: cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Performs a true SQL bulk update bypassing EF Core change-tracking.
+    /// <c>SaveChangesAsync</c> is NOT required after this call.
+    /// </remarks>
+    public virtual async Task BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    {
+        var list = entities as List<TEntity> ?? entities.ToList();
+        if (list.Count == 0) return;
+
+        var config = new BulkConfig { BatchSize = 500 };
+        await _context.BulkUpdateAsync(list, config, cancellationToken: cancellationToken);
+    }
 
     public virtual void Update(TEntity entity)
         => _dbSet.Update(entity);

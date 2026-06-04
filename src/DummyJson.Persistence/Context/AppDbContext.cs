@@ -1,6 +1,9 @@
 using DummyJson.Domain.Carts;
+using DummyJson.Domain.Comments;
 using DummyJson.Domain.Common.Interfaces;
 using DummyJson.Domain.Common.Primitives;
+using DummyJson.Domain.Quotes;
+using DummyJson.Domain.Recipes;
 using DummyJson.Domain.Todos;
 using DummyJson.Domain.Users;
 using Microsoft.AspNetCore.Identity;
@@ -17,11 +20,14 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, Applicatio
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    // ── DbSets ────────────────────────────────────────────────────────────────
+    // ── DbSets ─────────────────────────────────────────────────────────────
     public DbSet<User> DomainUsers { get; set; }
     public DbSet<Cart> Carts { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Todo> Todos { get; set; }
+    public DbSet<Quote> Quotes { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Recipe> Recipes { get; set; }
     public DbSet<ApplicationUserRefreshToken> UserRefreshTokens { get; set; }
 
     // ── Model Configuration ───────────────────────────────────────────────────
@@ -90,7 +96,7 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, Applicatio
         {
             if (entry.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
             {
-                entry.Property(nameof(IConcurrent.ConcurrencyStamp)).CurrentValue = DummyJson.Domain.Common.Primitives.IdGenerator.NewId();
+                entry.Property(nameof(IConcurrent.ConcurrencyStamp)).CurrentValue = DummyJson.Domain.Common.Primitives.IdGenerator.NewGuid();
             }
         }
     }

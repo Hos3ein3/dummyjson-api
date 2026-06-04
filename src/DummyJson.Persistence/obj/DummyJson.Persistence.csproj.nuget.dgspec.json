@@ -107,6 +107,8 @@
             "AutoFixture": "4.18.1",
             "Bogus": "35.6.1",
             "coverlet.collector": "6.0.4",
+            "EFCore.BulkExtensions": "8.1.2",
+            "EFCore.BulkExtensions.PostgreSql": "8.1.2",
             "FFMpegCore": "5.4.0",
             "FluentAssertions": "7.0.0",
             "FluentValidation": "11.11.0",
@@ -245,6 +247,8 @@
             "AutoFixture": "4.18.1",
             "Bogus": "35.6.1",
             "coverlet.collector": "6.0.4",
+            "EFCore.BulkExtensions": "8.1.2",
+            "EFCore.BulkExtensions.PostgreSql": "8.1.2",
             "FFMpegCore": "5.4.0",
             "FluentAssertions": "7.0.0",
             "FluentValidation": "11.11.0",
@@ -379,6 +383,16 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "EFCore.BulkExtensions": {
+              "target": "Package",
+              "version": "[8.1.2, )",
+              "versionCentrallyManaged": true
+            },
+            "EFCore.BulkExtensions.PostgreSql": {
+              "target": "Package",
+              "version": "[8.1.2, )",
+              "versionCentrallyManaged": true
+            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.5, )",
@@ -442,6 +456,8 @@
             "AutoFixture": "4.18.1",
             "Bogus": "35.6.1",
             "coverlet.collector": "6.0.4",
+            "EFCore.BulkExtensions": "8.1.2",
+            "EFCore.BulkExtensions.PostgreSql": "8.1.2",
             "FFMpegCore": "5.4.0",
             "FluentAssertions": "7.0.0",
             "FluentValidation": "11.11.0",

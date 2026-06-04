@@ -9,7 +9,7 @@ namespace DummyJson.Domain.Products;
 /// Product aggregate root — corresponds to DummyJSON /products resource.
 /// Products are stored in MongoDB (see MongoDbContext).
 /// </summary>
-public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete
+public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConcurrent
 {
     private Product() { } // Required for MongoDB driver deserialization
 
@@ -85,6 +85,9 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete
     public DateTimeOffset? DeletedAt { get; private set; }
     public string? DeletedBy { get; private set; }
 
+    //IConcurrent
+    public Guid ConcurrencyStamp { get; private set; }
+    
     // ── Factory ───────────────────────────────────────────────────────────────
 
     public static Result<Product> Create(
@@ -182,4 +185,6 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete
         UpdatedAt = DateTimeOffset.UtcNow;
         UpdatedBy = updatedBy;
     }
+
+   
 }

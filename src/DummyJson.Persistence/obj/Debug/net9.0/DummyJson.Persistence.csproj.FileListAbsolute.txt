@@ -11,6 +11,7 @@
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Persistence/obj/Debug/net9.0/DummyJson.Persistence.AssemblyInfoInputs.cache
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Persistence/obj/Debug/net9.0/DummyJson.Persistence.AssemblyInfo.cs
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Persistence/obj/Debug/net9.0/DummyJson.Persistence.csproj.CoreCompileInputs.cache
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Persistence/obj/Debug/net9.0/DummyJson.Persistence.sourcelink.json
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Persistence/obj/Debug/net9.0/DummyJso.2F6D24B3.Up2Date
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Persistence/obj/Debug/net9.0/DummyJson.Persistence.dll
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Persistence/obj/Debug/net9.0/refint/DummyJson.Persistence.dll

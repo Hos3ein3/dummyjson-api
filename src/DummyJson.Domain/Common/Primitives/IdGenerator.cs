@@ -11,4 +11,6 @@ public static class IdGenerator
     /// Generates a new time-sortable Guid (UUIDv7).
     /// </summary>
     public static Guid NewId() => Guid.CreateVersion7();
+    
+    public static Guid NewGuid() => Guid.NewGuid();
 }

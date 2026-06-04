@@ -8,6 +8,7 @@
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.AssemblyInfoInputs.cache
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.AssemblyInfo.cs
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.csproj.CoreCompileInputs.cache
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.sourcelink.json
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJso.F8DE507C.Up2Date
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/DummyJson.Application.dll
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Application/obj/Debug/net9.0/refint/DummyJson.Application.dll

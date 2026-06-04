@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DummyJson")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dbf2ef79a0f177a4175b906c1a8a254aadaad3e7")]
 [assembly: System.Reflection.AssemblyProductAttribute("DummyJson.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DummyJson.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

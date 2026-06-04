@@ -10,5 +10,5 @@ public interface IConcurrent
     /// <summary>
     /// Stamp used to track concurrency. Usually updated on every modification.
     /// </summary>
-    Guid ConcurrencyStamp { get; set; }
+    Guid ConcurrencyStamp { get;  }
 }

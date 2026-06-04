@@ -5,6 +5,7 @@
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/DummyJson.Domain.AssemblyInfoInputs.cache
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/DummyJson.Domain.AssemblyInfo.cs
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/DummyJson.Domain.csproj.CoreCompileInputs.cache
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/DummyJson.Domain.sourcelink.json
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/DummyJson.Domain.dll
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/refint/DummyJson.Domain.dll
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/DummyJson.Domain.pdb
