@@ -19,14 +19,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set lowercase owner
+        run: echo "OWNER_LC=${OWNER,,}" >> $GITHUB_ENV
+        env:
+          OWNER: ${{ github.repository_owner }}
+
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository_owner }}/dummyjson-api:latest -f Dockerfile .
+        run: docker build -t ghcr.io/${{ env.OWNER_LC }}/dummyjson-api:latest -f Dockerfile .
 
       - name: Push Docker image
-        run: docker push ghcr.io/${{ github.repository_owner }}/dummyjson-api:latest
+        run: docker push ghcr.io/${{ env.OWNER_LC }}/dummyjson-api:latest
 
       - name: Ensure deploy folder exists
         run: sudo mkdir -p "$DEPLOY_PATH"
@@ -35,7 +40,9 @@ jobs:
         run: sudo cp docker-compose.yml "$DEPLOY_PATH/docker-compose.yml"
 
       - name: Copy .env
-        run: sudo cp .env "$DEPLOY_PATH/.env"
+        run: |
+          sudo cp .env "$DEPLOY_PATH/.env"
+          sudo sed -i "s/^GITHUB_REPOSITORY_OWNER=.*/GITHUB_REPOSITORY_OWNER=${{ env.OWNER_LC }}/" "$DEPLOY_PATH/.env"
 
       - name: Copy API wwwroot
         run: |
@@ -45,7 +52,7 @@ jobs:
           fi
 
       - name: Pull latest image
-        run: docker pull ghcr.io/hos3ein3/dummyjson-api:latest
+        run: docker pull ghcr.io/${{ env.OWNER_LC }}/dummyjson-api:latest
 
       - name: Run docker compose
         run: |
