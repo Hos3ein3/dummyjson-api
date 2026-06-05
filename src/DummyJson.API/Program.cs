@@ -259,6 +259,7 @@ try
     app.MapHealthChecksUI(options => options.UIPath = "/health-ui");
 
     Log.Information("DummyJson API started. Scalar UI: https://localhost:*/scalar");
+    Log.Information("env:{0}", app.Environment.EnvironmentName);
     await app.RunAsync();
 }
 catch (Exception ex)

@@ -21,6 +21,7 @@ public static class DependencyInjection
 
         services.AddDbContext<AppDbContext>(options =>
         {
+            Console.WriteLine("Database Provider: {0} ",dbProvider);
             if (dbProvider.Equals("InMemory", StringComparison.OrdinalIgnoreCase))
             {
                 options.UseInMemoryDatabase("DummyJsonDb");
@@ -30,10 +31,15 @@ public static class DependencyInjection
                 options.UseSqlServer(
                     configuration.GetConnectionString("SqlServer"),
                     sql => sql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
+                Console.WriteLine("Connection String: {0}", configuration.GetConnectionString("SqlServer"));
             }
             else
             {
-                var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(configuration.GetConnectionString("PostgreSQL"));
+                var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(
+                    configuration.GetConnectionString("PostgreSQL"));
+                
+                Console.WriteLine("Connection String: {0}", 
+                    configuration.GetConnectionString("PostgreSQL"));
                 dataSourceBuilder.EnableDynamicJson();
                 var dataSource = dataSourceBuilder.Build();
                 
