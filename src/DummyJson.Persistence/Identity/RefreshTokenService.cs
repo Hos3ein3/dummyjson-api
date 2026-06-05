@@ -4,6 +4,7 @@ using DummyJson.Persistence.Context;
 using SharedKernel.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using DummyJson.Domain.Users;
 
 namespace DummyJson.Persistence.Identity;
 
@@ -52,7 +53,7 @@ public sealed class RefreshTokenService : IRefreshTokenService
         token.IsUsed = true;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(token.User.DomainUserId);
+        return Result.Success(token.User.Id);
     }
 
     public async Task RevokeRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)

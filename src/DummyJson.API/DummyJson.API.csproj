@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.MySql" />
     <PackageReference Include="AspNetCore.HealthChecks.Redis" />
     <PackageReference Include="AspNetCore.HealthChecks.UI" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
@@ -40,6 +39,10 @@
     <ProjectReference Include="..\DummyJson.Application\DummyJson.Application.csproj" />
     <ProjectReference Include="..\DummyJson.Infrastructure\DummyJson.Infrastructure.csproj" />
     <ProjectReference Include="..\DummyJson.Persistence\DummyJson.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

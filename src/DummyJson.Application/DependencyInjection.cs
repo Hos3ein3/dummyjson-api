@@ -10,6 +10,8 @@ using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using DummyJson.Domain.Common.Primitives;
+using Application.Common.Errors;
+using Application.Common.Validation;
 
 namespace DummyJson.Application;
 
@@ -23,6 +25,9 @@ public static class DependencyInjection
         // ── Generic Service ───────────────────────────────────────────────────
         services.AddScoped(typeof(DummyJson.Application.Common.Interfaces.IGenericService<,>), typeof(DummyJson.Application.Common.Services.GenericService<,>));
 
+        // ── Errors & Localization ─────────────────────────────────────────────
+        services.AddSingleton<IErrorFactory, ErrorFactory>();
+
         // ── Mapster ───────────────────────────────────────────────────────────
         var config = TypeAdapterConfig.GlobalSettings;
         config.Scan(Assembly.GetExecutingAssembly());
@@ -31,6 +36,8 @@ public static class DependencyInjection
 
         // ── FluentValidation ──────────────────────────────────────────────────
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        // Fallback open generic validator so Minimal APIs won't crash when a specific validator isn't defined yet
+        services.AddTransient(typeof(IValidator<>), typeof(EmptyValidator<>));
 
         // ── Product Handlers ──────────────────────────────────────────────────
         services.AddScoped<ICommandHandler<CreateProductCommand, Result<Guid>>, CreateProductCommandHandler>();

@@ -10,24 +10,24 @@ namespace DummyJson.Persistence.Repositories;
 /// EF Core implementation of <see cref="IUserRepository"/>.
 /// Inherits all generic CRUD + bulk operations from <see cref="GenericRepository{TEntity,TId}"/>.
 /// </summary>
-public sealed class UserRepository : GenericRepository<User, Guid>, IUserRepository
+public sealed class UserRepository : GenericRepository<ApplicationUser, Guid>, IUserRepository
 {
     public UserRepository(AppDbContext context) : base(context) { }
 
     /// <inheritdoc/>
-    public async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
+    public async Task<ApplicationUser?> GetByEmailAsync(string email, CancellationToken ct = default)
         => await _dbSet
             .AsNoTracking()
             .FirstOrDefaultAsync(u => EF.Functions.ILike(u.Email, email), ct);
 
     /// <inheritdoc/>
-    public async Task<User?> GetByUsernameAsync(string username, CancellationToken ct = default)
+    public async Task<ApplicationUser?> GetByUsernameAsync(string username, CancellationToken ct = default)
         => await _dbSet
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => EF.Functions.ILike(u.Username, username), ct);
+            .FirstOrDefaultAsync(u => EF.Functions.ILike(u.UserName, username), ct);
 
     /// <inheritdoc/>
-    public async Task<PagedList<User>> SearchAsync(
+    public async Task<PagedList<ApplicationUser>> SearchAsync(
         string searchTerm, int page, int pageSize, CancellationToken ct = default)
     {
         var term = $"%{searchTerm}%";
@@ -36,7 +36,7 @@ public sealed class UserRepository : GenericRepository<User, Guid>, IUserReposit
             .Where(u =>
                 EF.Functions.ILike(u.FirstName, term) ||
                 EF.Functions.ILike(u.LastName, term)  ||
-                EF.Functions.ILike(u.Username, term)  ||
+                EF.Functions.ILike(u.UserName, term)  ||
                 EF.Functions.ILike(u.Email, term));
 
         var total = await query.CountAsync(ct);
@@ -47,6 +47,6 @@ public sealed class UserRepository : GenericRepository<User, Guid>, IUserReposit
             .Take(pageSize)
             .ToListAsync(ct);
 
-        return new PagedList<User>(items, page, pageSize, total);
+        return new PagedList<ApplicationUser>(items, page, pageSize, total);
     }
 }

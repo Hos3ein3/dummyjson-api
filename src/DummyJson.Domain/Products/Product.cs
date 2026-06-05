@@ -7,11 +7,30 @@ namespace DummyJson.Domain.Products;
 
 /// <summary>
 /// Product aggregate root — corresponds to DummyJSON /products resource.
-/// Products are stored in MongoDB (see MongoDbContext).
+/// Stored in <b>PostgreSQL</b> via EF Core.
+///
+/// <para>
+/// <b>Category:</b> Normalised via <see cref="CategoryId"/> FK to the
+/// <c>ProductCategories</c> lookup table. The <see cref="Category"/>
+/// navigation property is available for eager/lazy loading.
+/// </para>
+/// <para>
+/// <b>Images:</b> Stored as a <c>jsonb</c> array column — no separate table
+/// needed for a simple string list.
+/// </para>
+/// <para>
+/// <b>Tags:</b> Managed via the <c>ProductTags</c> join table (see
+/// <see cref="Tags"/> domain entities).
+/// </para>
+/// <para>
+/// <b>Reviews:</b> Moved to MongoDB — stored as standalone
+/// <see cref="ProductReview"/> documents in the <c>product_reviews</c>
+/// collection. Not loaded here; query the review repository separately.
+/// </para>
 /// </summary>
-public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConcurrent
+public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete, IConcurrent
 {
-    private Product() { } // Required for MongoDB driver deserialization
+    private Product() { }   // Required by EF Core
 
     private Product(
         Guid id,
@@ -22,10 +41,8 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
         double rating,
         int stock,
         string brand,
-        string category,
+        Guid categoryId,
         string thumbnail,
-        IEnumerable<string> images,
-        IEnumerable<string> tags,
         string sku,
         string barcode,
         int minimumOrderQuantity,
@@ -41,10 +58,9 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
         Rating = rating;
         Stock = stock;
         Brand = brand;
-        Category = category;
+        CategoryId = categoryId;
+
         Thumbnail = thumbnail;
-        Images = images.ToList();
-        Tags = tags.ToList();
         Sku = sku;
         Barcode = barcode;
         MinimumOrderQuantity = minimumOrderQuantity;
@@ -54,6 +70,8 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
         ReturnPolicy = returnPolicy;
     }
 
+    // ── Scalar properties ─────────────────────────────────────────────────────
+
     public string Title { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public decimal Price { get; private set; }
@@ -61,10 +79,21 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
     public double Rating { get; private set; }
     public int Stock { get; private set; }
     public string Brand { get; private set; } = string.Empty;
-    public string Category { get; private set; } = string.Empty;
+
+    // ── Category (normalised FK) ───────────────────────────────────────────────
+
+    /// <summary>FK to the <c>ProductCategories</c> lookup table.</summary>
+    public Guid CategoryId { get; private set; }
+
+    /// <summary>EF Core navigation — loaded on demand.</summary>
+    public ProductCategory? Category { get; private set; }
+
+    // ── Media ─────────────────────────────────────────────────────────────────
+
     public string Thumbnail { get; private set; } = string.Empty;
-    public List<string> Images { get; private set; } = [];
-    public List<string> Tags { get; private set; } = [];
+
+    // ── Commerce ──────────────────────────────────────────────────────────────
+
     public string Sku { get; private set; } = string.Empty;
     public string Barcode { get; private set; } = string.Empty;
     public int MinimumOrderQuantity { get; private set; }
@@ -72,24 +101,28 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
     public string ShippingInformation { get; private set; } = string.Empty;
     public string AvailabilityStatus { get; private set; } = string.Empty;
     public string ReturnPolicy { get; private set; } = string.Empty;
-    public List<ProductReview> Reviews { get; private set; } = [];
 
-    // IAuditable
+    // ── IAuditable ────────────────────────────────────────────────────────────
     public DateTimeOffset CreatedAt { get; private set; }
     public string? CreatedBy { get; private set; }
     public DateTimeOffset? UpdatedAt { get; private set; }
     public string? UpdatedBy { get; private set; }
 
-    // ISoftDelete
+    // ── ISoftDelete ───────────────────────────────────────────────────────────
     public bool IsDeleted { get; private set; }
     public DateTimeOffset? DeletedAt { get; private set; }
     public string? DeletedBy { get; private set; }
 
-    //IConcurrent
+    // ── IConcurrent ───────────────────────────────────────────────────────────
     public Guid ConcurrencyStamp { get; private set; }
-    
+
     // ── Factory ───────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Creates a new <see cref="Product"/> and raises a
+    /// <see cref="ProductCreatedEvent"/> domain event.
+    /// </summary>
+    /// <param name="categoryId">PK of the <see cref="ProductCategory"/> row.</param>
     public static Result<Product> Create(
         string title,
         string description,
@@ -97,10 +130,8 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
         decimal discountPercentage,
         int stock,
         string brand,
-        string category,
+        Guid categoryId,
         string thumbnail,
-        IEnumerable<string> images,
-        IEnumerable<string> tags,
         string sku = "",
         string barcode = "",
         int minimumOrderQuantity = 1,
@@ -118,8 +149,8 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
         var product = new Product(
             Guid.CreateVersion7(),
             title, description, price, discountPercentage,
-            0, stock, brand, category, thumbnail,
-            images, tags, sku, barcode, minimumOrderQuantity,
+            0, stock, brand, categoryId, thumbnail,
+            sku, barcode, minimumOrderQuantity,
             warrantyInformation, shippingInformation, availabilityStatus, returnPolicy)
         {
             CreatedAt = DateTimeOffset.UtcNow
@@ -149,10 +180,10 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
         return Result.Success();
     }
 
-    public void AddReview(ProductReview review)
+    /// <summary>Updates the aggregate rating (called after a review is added/removed).</summary>
+    public void UpdateRating(double newRating)
     {
-        Reviews.Add(review);
-        Rating = Reviews.Count > 0 ? Reviews.Average(r => r.Rating) : 0;
+        Rating = newRating;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 
@@ -173,7 +204,7 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 
-    // Called by persistence layer for auditing
+    // Called by persistence interceptors for auditing
     internal void SetAuditCreated(string? createdBy)
     {
         CreatedAt = DateTimeOffset.UtcNow;
@@ -185,6 +216,4 @@ public sealed class Product : AggregateRoot<Guid>, IAuditable, ISoftDelete,IConc
         UpdatedAt = DateTimeOffset.UtcNow;
         UpdatedBy = updatedBy;
     }
-
-   
 }

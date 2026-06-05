@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "7LuZOyAj+dw=",
+  "dgSpecHash": "pxXr8jid81M=",
   "success": true,
   "projectFilePath": "/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.API/DummyJson.API.csproj",
   "expectedPackageFiles": [
@@ -9,7 +9,6 @@
     "/Users/mohammadhosein/.nuget/packages/asp.versioning.mvc/8.1.0/asp.versioning.mvc.8.1.0.nupkg.sha512",
     "/Users/mohammadhosein/.nuget/packages/asp.versioning.mvc.apiexplorer/8.1.0/asp.versioning.mvc.apiexplorer.8.1.0.nupkg.sha512",
     "/Users/mohammadhosein/.nuget/packages/aspnetcore.healthchecks.mongodb/9.0.0/aspnetcore.healthchecks.mongodb.9.0.0.nupkg.sha512",
-    "/Users/mohammadhosein/.nuget/packages/aspnetcore.healthchecks.mysql/9.0.0/aspnetcore.healthchecks.mysql.9.0.0.nupkg.sha512",
     "/Users/mohammadhosein/.nuget/packages/aspnetcore.healthchecks.npgsql/9.0.0/aspnetcore.healthchecks.npgsql.9.0.0.nupkg.sha512",
     "/Users/mohammadhosein/.nuget/packages/aspnetcore.healthchecks.redis/9.0.0/aspnetcore.healthchecks.redis.9.0.0.nupkg.sha512",
     "/Users/mohammadhosein/.nuget/packages/aspnetcore.healthchecks.ui/9.0.0/aspnetcore.healthchecks.ui.9.0.0.nupkg.sha512",

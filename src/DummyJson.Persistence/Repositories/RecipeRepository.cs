@@ -1,36 +1,40 @@
 using DummyJson.Application.Common.Repository;
 using DummyJson.Domain.Recipes;
 using DummyJson.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
+using MongoDB.Bson;
 using SharedKernel.Results;
 
 namespace DummyJson.Persistence.Repositories;
 
 /// <summary>
-/// EF Core implementation of <see cref="IRecipeRepository"/>.
-/// Inherits all generic CRUD + bulk operations from <see cref="GenericRepository{TEntity,TId}"/>.
+/// MongoDB implementation of <see cref="IRecipeRepository"/>.
+/// Inherits all generic CRUD + bulk operations from <see cref="MongoRepository{T}"/>.
 /// </summary>
-public sealed class RecipeRepository : GenericRepository<Recipe, Guid>, IRecipeRepository
+public sealed class RecipeRepository : MongoRepository<Recipe>, IRecipeRepository
 {
-    public RecipeRepository(AppDbContext context) : base(context) { }
+    private readonly IMongoCollection<Recipe> _recipes;
+
+    public RecipeRepository(MongoDbContext context) : base(context) 
+    {
+        _recipes = context.Recipes;
+    }
 
     /// <inheritdoc/>
     public async Task<IReadOnlyList<Recipe>> GetByCuisineAsync(
         string cuisine, CancellationToken ct = default)
-        => await _dbSet
-            .AsNoTracking()
-            .Where(r => EF.Functions.ILike(r.Cuisine, $"%{cuisine}%"))
-            .OrderBy(r => r.Name)
-            .ToListAsync(ct);
+    {
+        var filter = Builders<Recipe>.Filter.Regex(r => r.Cuisine, new BsonRegularExpression(cuisine, "i"));
+        return await _recipes.Find(filter).SortBy(r => r.Name).ToListAsync(ct);
+    }
 
     /// <inheritdoc/>
     public async Task<IReadOnlyList<Recipe>> GetByDifficultyAsync(
         string difficulty, CancellationToken ct = default)
-        => await _dbSet
-            .AsNoTracking()
-            .Where(r => EF.Functions.ILike(r.Difficulty, difficulty))
-            .OrderByDescending(r => r.Rating)
-            .ToListAsync(ct);
+    {
+        var filter = Builders<Recipe>.Filter.Eq(r => r.Difficulty, difficulty);
+        return await _recipes.Find(filter).SortByDescending(r => r.Rating).ToListAsync(ct);
+    }
 
     /// <inheritdoc/>
     public async Task<PagedList<Recipe>> SearchAsync(
@@ -41,25 +45,47 @@ public sealed class RecipeRepository : GenericRepository<Recipe, Guid>, IRecipeR
         int pageSize,
         CancellationToken ct = default)
     {
-        var query = _dbSet.AsNoTracking();
+        var builder = Builders<Recipe>.Filter;
+        var filter = builder.Empty;
 
         if (!string.IsNullOrWhiteSpace(cuisine))
-            query = query.Where(r => EF.Functions.ILike(r.Cuisine, $"%{cuisine}%"));
+            filter &= builder.Regex(r => r.Cuisine, new BsonRegularExpression(cuisine, "i"));
 
         if (!string.IsNullOrWhiteSpace(difficulty))
-            query = query.Where(r => EF.Functions.ILike(r.Difficulty, difficulty));
+            filter &= builder.Eq(r => r.Difficulty, difficulty);
 
-        // MealType is a jsonb column — use Any operator for array containment
         if (!string.IsNullOrWhiteSpace(mealType))
-            query = query.Where(r => r.MealType.Contains(mealType));
+            filter &= builder.AnyEq(r => r.MealType, mealType);
 
-        var total = await query.CountAsync(ct);
-        var items = await query
-            .OrderByDescending(r => r.Rating)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+        var countFacet = AggregateFacet.Create("count",
+            PipelineDefinition<Recipe, AggregateCountResult>.Create(new[]
+            {
+                PipelineStageDefinitionBuilder.Count<Recipe>()
+            }));
+
+        var dataFacet = AggregateFacet.Create("data",
+            PipelineDefinition<Recipe, Recipe>.Create(new[]
+            {
+                PipelineStageDefinitionBuilder.Sort(Builders<Recipe>.Sort.Descending(r => r.Rating)),
+                PipelineStageDefinitionBuilder.Skip<Recipe>((page - 1) * pageSize),
+                PipelineStageDefinitionBuilder.Limit<Recipe>(pageSize)
+            }));
+
+        var aggregation = await _recipes.Aggregate()
+            .Match(filter)
+            .Facet(countFacet, dataFacet)
             .ToListAsync(ct);
 
-        return new PagedList<Recipe>(items, page, pageSize, total);
+        var count = aggregation.First()
+            .Facets.First(x => x.Name == "count")
+            .Output<AggregateCountResult>()
+            ?.FirstOrDefault()?.Count ?? 0;
+
+        var items = aggregation.First()
+            .Facets.First(x => x.Name == "data")
+            .Output<Recipe>()
+            .ToList();
+
+        return new PagedList<Recipe>(items, page, pageSize, (int)count);
     }
 }

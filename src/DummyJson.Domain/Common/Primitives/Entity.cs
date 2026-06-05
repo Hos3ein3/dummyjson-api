@@ -6,7 +6,7 @@ namespace DummyJson.Domain.Common.Primitives;
 /// which is time-sortable (UUIDv7) and DB-index friendly.
 /// </summary>
 /// <typeparam name="TId">Type of the identifier — must be a value type (struct).</typeparam>
-public abstract class Entity<TId> : IEquatable<Entity<TId>>
+public abstract class Entity<TId> : IEntity<TId>, IEquatable<Entity<TId>>
     where TId : struct
 {
     private readonly List<IDomainEvent> _domainEvents = [];

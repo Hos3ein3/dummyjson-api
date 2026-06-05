@@ -1,6 +1,7 @@
 using DummyJson.Application.Common.Interfaces;
 using DummyJson.Application.Common.Repository;
 using DummyJson.Application.Common.UnitOfWork;
+using DummyJson.Domain.Users;
 using DummyJson.Persistence.Context;
 using DummyJson.Persistence.Repositories;
 using DummyJson.Persistence.Seeding;
@@ -32,8 +33,12 @@ public static class DependencyInjection
             }
             else
             {
+                var dataSourceBuilder = new Npgsql.NpgsqlDataSourceBuilder(configuration.GetConnectionString("PostgreSQL"));
+                dataSourceBuilder.EnableDynamicJson();
+                var dataSource = dataSourceBuilder.Build();
+                
                 options.UseNpgsql(
-                    configuration.GetConnectionString("PostgreSQL"),
+                    dataSource,
                     npgsql => npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
             }
         });
@@ -72,6 +77,10 @@ public static class DependencyInjection
         services.AddScoped<IQuoteRepository, QuoteRepository>();
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<IRecipeRepository, RecipeRepository>();
+        services.AddScoped<IProductImageRepository, ProductImageRepository>();
+        services.AddScoped<IUserAddressRepository, UserAddressRepository>();
+        services.AddScoped<IUserPreferencesRepository, UserPreferencesRepository>();
+        services.AddScoped<IProductReviewRepository, ProductReviewRepository>();
 
         // ── Data Seeder ─────────────────────────────────────────────────────────── & Auth
         services.AddScoped<DataSeeder>();

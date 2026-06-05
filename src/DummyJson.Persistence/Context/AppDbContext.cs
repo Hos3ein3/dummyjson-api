@@ -2,8 +2,10 @@ using DummyJson.Domain.Carts;
 using DummyJson.Domain.Comments;
 using DummyJson.Domain.Common.Interfaces;
 using DummyJson.Domain.Common.Primitives;
+using DummyJson.Domain.Posts;
+using DummyJson.Domain.Products;
 using DummyJson.Domain.Quotes;
-using DummyJson.Domain.Recipes;
+using DummyJson.Domain.Tags;
 using DummyJson.Domain.Todos;
 using DummyJson.Domain.Users;
 using Microsoft.AspNetCore.Identity;
@@ -21,13 +23,23 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, Applicatio
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     // ── DbSets ─────────────────────────────────────────────────────────────
-    public DbSet<User> DomainUsers { get; set; }
+    // Users is provided by IdentityDbContext<ApplicationUser>
     public DbSet<Cart> Carts { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Todo> Todos { get; set; }
     public DbSet<Quote> Quotes { get; set; }
     public DbSet<Comment> Comments { get; set; }
-    public DbSet<Recipe> Recipes { get; set; }
+
+    // ── Moved from MongoDB → PostgreSQL ──────────────────────────────────────
+    /// <summary>Products — now in PostgreSQL (moved from MongoDB).</summary>
+    public DbSet<Product> Products { get; set; }
+    /// <summary>Posts — now in PostgreSQL (moved from MongoDB).</summary>
+    public DbSet<Post> Posts { get; set; }
+
+    // ── Product catalogue (relational shadow tables) ───────────────────────────
+    /// <summary>Normalised product category lookup.</summary>
+    public DbSet<ProductCategory> ProductCategories { get; set; }
+
     public DbSet<ApplicationUserRefreshToken> UserRefreshTokens { get; set; }
 
     // ── Model Configuration ───────────────────────────────────────────────────
@@ -48,11 +60,6 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, Applicatio
 
         // Apply all entity configurations from this assembly
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-
-        // Enforce Unique PhoneNumber
-        builder.Entity<ApplicationUser>()
-            .HasIndex(u => u.PhoneNumber)
-            .IsUnique();
 
         // Global soft-delete query filters
         foreach (var entityType in builder.Model.GetEntityTypes())

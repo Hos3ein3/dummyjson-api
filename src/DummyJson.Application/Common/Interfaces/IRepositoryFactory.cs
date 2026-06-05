@@ -28,5 +28,4 @@ public interface IRepositoryFactory
     ICommentRepository Comments { get; }
 
     /// <summary>Gets the <see cref="IRecipeRepository"/>.</summary>
-    IRecipeRepository Recipes { get; }
 }

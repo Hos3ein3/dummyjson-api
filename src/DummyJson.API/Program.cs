@@ -110,11 +110,12 @@ try
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddProblemDetails();
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+    builder.Services.AddLocalization();
 
     // ── Health Checks ─────────────────────────────────────────────────────────
-    builder.Services.AddHealthChecks()
-        .AddMySql(builder.Configuration.GetConnectionString("DefaultConnection") ?? "", name: "MySQL")
-        .AddRedis(builder.Configuration.GetConnectionString("Redis") ?? "", name: "Redis");
+    builder.Services.AddHealthChecks();
+        // .AddNpgSql(builder.Configuration.GetConnectionString("PostgreSQL") ?? "", name: "PostgreSQL")
+        // .AddRedis(builder.Configuration.GetConnectionString("Redis") ?? "", name: "Redis");
     
     builder.Services.AddHealthChecksUI(options =>
     {
@@ -216,8 +217,8 @@ try
     });
 
 
-    if (app.Environment.IsDevelopment())
-    {
+    // if (app.Environment.IsDevelopment())
+    // {
         app.MapOpenApi();
         app.MapScalarApiReference(options =>
         {
@@ -233,7 +234,7 @@ try
             options.WithTitle("DummyJson API v1").WithOpenApiRoutePattern("/openapi/v1.json"));
         app.MapScalarApiReference("scalar-v2", options =>
             options.WithTitle("DummyJson API v2").WithOpenApiRoutePattern("/openapi/v2.json"));
-    }
+    //}
 
     app.MapAuthEndpoints();
     app.MapProductEndpoints();

@@ -20,7 +20,7 @@ public sealed class RepositoryFactory : IRepositoryFactory
     private ITodoRepository? _todos;
     private IQuoteRepository? _quotes;
     private ICommentRepository? _comments;
-    private IRecipeRepository? _recipes;
+
 
     public RepositoryFactory(AppDbContext context)
     {
@@ -47,7 +47,4 @@ public sealed class RepositoryFactory : IRepositoryFactory
     public ICommentRepository Comments
         => _comments ??= new CommentRepository(_context);
 
-    /// <inheritdoc/>
-    public IRecipeRepository Recipes
-        => _recipes ??= new RecipeRepository(_context);
 }

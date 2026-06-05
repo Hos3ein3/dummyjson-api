@@ -10,3 +10,4 @@
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/refint/DummyJson.Domain.dll
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/DummyJson.Domain.pdb
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/ref/DummyJson.Domain.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/src/DummyJson.Domain/obj/Debug/net9.0/DummyJson.Domain.csproj.AssemblyReference.cache

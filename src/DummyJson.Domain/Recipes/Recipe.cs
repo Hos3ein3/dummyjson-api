@@ -1,21 +1,30 @@
-using DummyJson.Domain.Common.Interfaces;
-using SharedKernel.Results;
 using DummyJson.Domain.Common.Primitives;
+using SharedKernel.Results;
 
 namespace DummyJson.Domain.Recipes;
 
 /// <summary>
-/// Recipe aggregate root — corresponds to DummyJSON /recipes resource.
-/// Stored in PostgreSQL via EF Core.
-/// Ingredients, instructions, tags and meal-type lists are stored as
-/// JSON columns (PostgreSQL jsonb / SQL Server nvarchar JSON).
+/// Recipe aggregate — corresponds to DummyJSON /recipes resource.
+/// Stored in <b>MongoDB</b> as a single rich document.
+///
+/// <para>
+/// All list-typed sub-documents (<see cref="Ingredients"/>, <see cref="Instructions"/>,
+/// <see cref="Tags"/>, <see cref="MealType"/>) are embedded directly in the document
+/// — no joins, no separate collections needed. This makes Recipes ideal for MongoDB:
+/// the entire recipe is fetched in one round-trip and schema is flexible per-document.
+/// </para>
+///
+/// <para>
+/// Soft-delete and audit fields are stored as document properties.
+/// There is no EF Core tracking; the Recipe collection is managed entirely via
+/// <see cref="MongoDB.Driver.IMongoCollection{TDocument}"/>.
+/// </para>
 /// </summary>
-public sealed class Recipe : AggregateRoot<Guid>, IAuditable, ISoftDelete
+public sealed class Recipe : MongoEntity
 {
-    private Recipe() { }
+    private Recipe() { }   // Required for MongoDB driver deserialization
 
     private Recipe(
-        Guid id,
         string name,
         List<string> ingredients,
         List<string> instructions,
@@ -29,7 +38,7 @@ public sealed class Recipe : AggregateRoot<Guid>, IAuditable, ISoftDelete
         List<string> mealType,
         string? image,
         double rating,
-        int reviewCount) : base(id)
+        int reviewCount)
     {
         Name = name;
         Ingredients = ingredients;
@@ -48,12 +57,14 @@ public sealed class Recipe : AggregateRoot<Guid>, IAuditable, ISoftDelete
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
+    // ── Core properties ───────────────────────────────────────────────────────
+
     public string Name { get; private set; } = string.Empty;
 
-    /// <summary>List of ingredients. Stored as JSON column.</summary>
+    /// <summary>List of ingredient strings — embedded array in the MongoDB document.</summary>
     public List<string> Ingredients { get; private set; } = [];
 
-    /// <summary>Step-by-step instructions. Stored as JSON column.</summary>
+    /// <summary>Step-by-step instructions — embedded array in the MongoDB document.</summary>
     public List<string> Instructions { get; private set; } = [];
 
     public int PrepTimeMinutes { get; private set; }
@@ -66,23 +77,25 @@ public sealed class Recipe : AggregateRoot<Guid>, IAuditable, ISoftDelete
     public string Cuisine { get; private set; } = string.Empty;
     public int CaloriesPerServing { get; private set; }
 
-    /// <summary>Classification tags. Stored as JSON column.</summary>
+    /// <summary>Classification tags — embedded string array.</summary>
     public List<string> Tags { get; private set; } = [];
 
-    /// <summary>Meal types (Breakfast / Lunch / Dinner / …). Stored as JSON column.</summary>
+    /// <summary>Meal types (Breakfast / Lunch / Dinner / …) — embedded string array.</summary>
     public List<string> MealType { get; private set; } = [];
 
     public string? Image { get; private set; }
     public double Rating { get; private set; }
     public int ReviewCount { get; private set; }
 
-    // IAuditable
+    // ── Audit fields (stored as document properties) ───────────────────────────
+
     public DateTimeOffset CreatedAt { get; private set; }
     public string? CreatedBy { get; private set; }
     public DateTimeOffset? UpdatedAt { get; private set; }
     public string? UpdatedBy { get; private set; }
 
-    // ISoftDelete
+    // ── Soft-delete fields ────────────────────────────────────────────────────
+
     public bool IsDeleted { get; private set; }
     public DateTimeOffset? DeletedAt { get; private set; }
     public string? DeletedBy { get; private set; }
@@ -112,7 +125,6 @@ public sealed class Recipe : AggregateRoot<Guid>, IAuditable, ISoftDelete
             return Result.Failure<Recipe>(Error.Validation(nameof(ingredients), "Ingredients cannot be empty."));
 
         return Result.Success(new Recipe(
-            Guid.CreateVersion7(),
             name, ingredients, instructions,
             prepTimeMinutes, cookTimeMinutes, servings,
             difficulty, cuisine, caloriesPerServing,

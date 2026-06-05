@@ -10,7 +10,7 @@ namespace DummyJson.Application.Common.Repository;
 /// <typeparam name="TEntity">Entity type that inherits from <see cref="Entity{TId}"/>.</typeparam>
 /// <typeparam name="TId">Type of the primary key — must be a value type.</typeparam>
 public interface IRepository<TEntity, TId>
-    where TEntity : Entity<TId>
+    where TEntity : class, IEntity<TId>
     where TId : struct
 {
     /// <summary>Returns entity by id, or null if not found.</summary>

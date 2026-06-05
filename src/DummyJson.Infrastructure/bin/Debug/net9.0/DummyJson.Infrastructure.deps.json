@@ -889,6 +889,9 @@
         }
       },
       "DummyJson.Domain/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Identity.Stores": "9.0.5"
+        },
         "runtime": {
           "DummyJson.Domain.dll": {
             "assemblyVersion": "1.0.0.0",

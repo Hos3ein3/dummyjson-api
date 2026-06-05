@@ -3,6 +3,7 @@ using DummyJson.Application.Common.UnitOfWork;
 using DummyJson.Application.Products.Commands;
 using SharedKernel.Results;
 using DummyJson.Domain.Products;
+using DummyJson.Application.Common.Repository;
 
 namespace DummyJson.Application.Products.Handlers;
 
@@ -11,16 +12,20 @@ namespace DummyJson.Application.Products.Handlers;
 public sealed class CreateProductCommandHandler : ICommandHandler<CreateProductCommand, Result<Guid>>
 {
     private readonly IUnitOfWork _uow;
+    private readonly IProductImageRepository _imageRepo;
 
-    public CreateProductCommandHandler(IUnitOfWork uow) => _uow = uow;
+    public CreateProductCommandHandler(IUnitOfWork uow, IProductImageRepository imageRepo)
+    {
+        _uow = uow;
+        _imageRepo = imageRepo;
+    }
 
     public async Task<Result<Guid>> HandleAsync(CreateProductCommand command, CancellationToken cancellationToken = default)
     {
-        
         var result = Product.Create(
             command.Title, command.Description, command.Price, command.DiscountPercentage,
-            command.Stock, command.Brand, command.Category, command.Thumbnail,
-            command.Images, command.Tags, command.Sku, command.Barcode,
+            command.Stock, command.Brand, Guid.Empty, command.Thumbnail,
+            command.Sku, command.Barcode,
             command.MinimumOrderQuantity, command.WarrantyInformation,
             command.ShippingInformation, command.AvailabilityStatus, command.ReturnPolicy);
 
@@ -30,6 +35,16 @@ public sealed class CreateProductCommandHandler : ICommandHandler<CreateProductC
         var repo = _uow.Repository<Product, Guid>();
         await repo.AddAsync(result.Value, cancellationToken);
         await _uow.SaveChangesAsync(cancellationToken);
+
+        // Save images to MongoDB
+        if (command.Images is not null && command.Images.Any())
+        {
+            foreach (var imageUrl in command.Images)
+            {
+                var productImage = new ProductImage(result.Value.Id, imageUrl);
+                await _imageRepo.InsertAsync(productImage, cancellationToken);
+            }
+        }
 
         return Result.Success<Guid>(result.Value.Id);
     }

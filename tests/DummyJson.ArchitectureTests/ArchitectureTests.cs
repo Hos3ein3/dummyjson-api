@@ -17,7 +17,7 @@ public class ArchitectureTests
 {
     private static readonly Architecture Architecture = new ArchLoader()
         .LoadAssemblies(
-            typeof(ApplicationUser).Assembly, // Persistence
+            typeof(AppDbContext).Assembly, // Persistence
             typeof(RedisCacheService).Assembly, // Infrastructure
             typeof(RegisterByEmailRequest).Assembly, // Application
             typeof(Entity<>).Assembly, // Domain
@@ -28,7 +28,7 @@ public class ArchitectureTests
     private readonly IObjectProvider<Class> DomainLayer = Classes().That().ResideInAssembly(typeof(Entity<>).Assembly).As("Domain Layer");
     private readonly IObjectProvider<Class> ApplicationLayer = Classes().That().ResideInAssembly(typeof(RegisterByEmailRequest).Assembly).As("Application Layer");
     private readonly IObjectProvider<Class> InfrastructureLayer = Classes().That().ResideInAssembly(typeof(RedisCacheService).Assembly).As("Infrastructure Layer");
-    private readonly IObjectProvider<Class> PersistenceLayer = Classes().That().ResideInAssembly(typeof(ApplicationUser).Assembly).As("Persistence Layer");
+    private readonly IObjectProvider<Class> PersistenceLayer = Classes().That().ResideInAssembly(typeof(AppDbContext).Assembly).As("Persistence Layer");
     private readonly IObjectProvider<Class> ApiLayer = Classes().That().ResideInAssembly(typeof(AuthEndpoints).Assembly).As("API Layer");
 
     [Fact]

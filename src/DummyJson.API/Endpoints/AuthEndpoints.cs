@@ -53,38 +53,44 @@ public static class AuthEndpoints
             IRefreshTokenService refreshTokenService,
             DummyJson.Infrastructure.Events.IntegrationEventDispatcher eventDispatcher,
             ApplicationUserManager userManager,
-            bool isNewRegistration,
+            bool isRegistration,
             CancellationToken ct)
         {
             var roles = await userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault() ?? "user";
 
             var fullName = $"{user.FirstName} {user.LastName}".Trim();
-            var accessToken = jwtTokenService.GenerateAccessToken(user.DomainUserId, user.UserName!, user.Email ?? user.UserName!, role, fullName, user.PhoneNumber);
+            var accessToken = jwtTokenService.GenerateAccessToken(user.Id, user.UserName!, user.Email ?? user.UserName!, role, fullName, user.PhoneNumber);
             var refreshToken = jwtTokenService.GenerateRefreshToken();
-            await refreshTokenService.StoreRefreshTokenAsync(user.DomainUserId, refreshToken, ct);
+            await refreshTokenService.StoreRefreshTokenAsync(user.Id, refreshToken, ct);
 
-            if (isNewRegistration && !string.IsNullOrEmpty(user.Email))
+            // Dispatch integration event only on registration
+            if (isRegistration)
             {
-                // Publish integration event to save UserPreferences
-                await eventDispatcher.DispatchAsync(new UserRegisteredIntegrationEvent(user.DomainUserId, user.Email), ct);
+                await eventDispatcher.DispatchAsync(new UserRegisteredIntegrationEvent(user.Id, user.Email), ct);
             }
 
+            // Map to response DTO
             var response = new AuthResponse(
                 IsWebClient(context) ? "" : accessToken, 
                 IsWebClient(context) ? "" : refreshToken,
                 jwtTokenService.GetAccessTokenExpiry(),
-                user.DomainUserId, user.UserName!, user.Email ?? "",
+                user.Id, user.UserName!, user.Email ?? "",
                 user.FirstName, user.LastName, user.Image, role);
+
+            if (isRegistration)
+            {
+                return role.Equals("admin", StringComparison.OrdinalIgnoreCase) 
+                ? Results.Created($"/api/v1/users/{user.Id}", response) 
+                : Results.Created($"/api/v1/users/me", response);
+            }
 
             if (IsWebClient(context))
             {
                 AppendTokensToCookies(context, accessToken, refreshToken);
             }
 
-            return isNewRegistration 
-                ? Results.Created($"/api/v1/users/{user.DomainUserId}", response) 
-                : Results.Ok(response);
+            return Results.Ok(response);
         }
 
         // ── Registration Endpoints ──────────────────────────────────────────────────

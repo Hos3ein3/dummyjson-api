@@ -75,11 +75,6 @@
               "version": "[9.0.0, )",
               "versionCentrallyManaged": true
             },
-            "AspNetCore.HealthChecks.MySql": {
-              "target": "Package",
-              "version": "[9.0.0, )",
-              "versionCentrallyManaged": true
-            },
             "AspNetCore.HealthChecks.Npgsql": {
               "target": "Package",
               "version": "[9.0.0, )",
@@ -233,6 +228,7 @@
             "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
             "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
             "Microsoft.Extensions.Http.Resilience": "9.0.0",
+            "Microsoft.Extensions.Identity.Stores": "9.0.5",
             "Microsoft.Extensions.Localization.Abstractions": "10.0.8",
             "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
             "Microsoft.FeatureManagement.AspNetCore": "4.0.0",
@@ -436,6 +432,7 @@
             "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
             "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
             "Microsoft.Extensions.Http.Resilience": "9.0.0",
+            "Microsoft.Extensions.Identity.Stores": "9.0.5",
             "Microsoft.Extensions.Localization.Abstractions": "10.0.8",
             "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
             "Microsoft.FeatureManagement.AspNetCore": "4.0.0",
@@ -539,6 +536,13 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.Extensions.Identity.Stores": {
+              "target": "Package",
+              "version": "[9.0.5, )",
+              "versionCentrallyManaged": true
+            }
+          },
           "centralPackageVersions": {
             "Asp.Versioning.Http": "8.1.0",
             "Asp.Versioning.Mvc": "8.1.0",
@@ -581,6 +585,7 @@
             "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
             "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
             "Microsoft.Extensions.Http.Resilience": "9.0.0",
+            "Microsoft.Extensions.Identity.Stores": "9.0.5",
             "Microsoft.Extensions.Localization.Abstractions": "10.0.8",
             "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
             "Microsoft.FeatureManagement.AspNetCore": "4.0.0",
@@ -827,6 +832,7 @@
             "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
             "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
             "Microsoft.Extensions.Http.Resilience": "9.0.0",
+            "Microsoft.Extensions.Identity.Stores": "9.0.5",
             "Microsoft.Extensions.Localization.Abstractions": "10.0.8",
             "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
             "Microsoft.FeatureManagement.AspNetCore": "4.0.0",
@@ -1041,6 +1047,7 @@
             "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
             "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
             "Microsoft.Extensions.Http.Resilience": "9.0.0",
+            "Microsoft.Extensions.Identity.Stores": "9.0.5",
             "Microsoft.Extensions.Localization.Abstractions": "10.0.8",
             "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
             "Microsoft.FeatureManagement.AspNetCore": "4.0.0",

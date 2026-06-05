@@ -768,8 +768,8 @@
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.IntegrationTests/obj/Debug/net9.0/DummyJson.IntegrationTests.pdb
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.IntegrationTests/obj/Debug/net9.0/DummyJson.IntegrationTests.genruntimeconfig.cache
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.IntegrationTests/obj/Debug/net9.0/ref/DummyJson.IntegrationTests.dll
-/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.IntegrationTests/bin/Debug/net9.0/HealthChecks.MySql.dll
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.IntegrationTests/bin/Debug/net9.0/HealthChecks.Redis.dll
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.IntegrationTests/bin/Debug/net9.0/MailKit.dll
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.IntegrationTests/bin/Debug/net9.0/MimeKit.dll
 /Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.IntegrationTests/bin/Debug/net9.0/Twilio.dll
+/Users/mohammadhosein/Development/DUMMYJson/DummyJson-API2/tests/DummyJson.IntegrationTests/bin/Debug/net9.0/DummyJson.API.staticwebassets.runtime.json

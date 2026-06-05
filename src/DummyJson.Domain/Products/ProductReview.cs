@@ -3,14 +3,27 @@ using DummyJson.Domain.Common.Primitives;
 namespace DummyJson.Domain.Products;
 
 /// <summary>
-/// Product review value object embedded within the Product aggregate.
+/// Product review — a standalone MongoDB document in the <c>product_reviews</c> collection.
+///
+/// <para>
+/// Moved out of the Product aggregate (where it was an embedded value object array)
+/// so that reviews can be paginated, queried and managed independently of the
+/// Product aggregate. Products are now stored in PostgreSQL; reviews remain in MongoDB
+/// to exploit schema-less storage for variable review structures.
+/// </para>
 /// </summary>
-public sealed class ProductReview : ValueObject
+public sealed class ProductReview : MongoEntity
 {
-    private ProductReview() { }
+    private ProductReview() { }   // Required for MongoDB driver deserialization
 
-    public ProductReview(string reviewerName, string reviewerEmail, double rating, string comment)
+    public ProductReview(
+        Guid productId,
+        string reviewerName,
+        string reviewerEmail,
+        double rating,
+        string comment)
     {
+        ProductId = productId;
         ReviewerName = reviewerName;
         ReviewerEmail = reviewerEmail;
         Rating = rating;
@@ -18,15 +31,17 @@ public sealed class ProductReview : ValueObject
         Date = DateTimeOffset.UtcNow;
     }
 
+    /// <summary>References the PostgreSQL <c>Products.Id</c> by value (no FK constraint).</summary>
+    public Guid ProductId { get; private set; }
+
     public string ReviewerName { get; private set; } = string.Empty;
     public string ReviewerEmail { get; private set; } = string.Empty;
-    public double Rating { get; private set; }
-    public string Comment { get; private set; } = string.Empty;
-    public DateTimeOffset Date { get; private set; }
 
-    protected override IEnumerable<object?> GetEqualityComponents()
-    {
-        yield return ReviewerEmail;
-        yield return Date;
-    }
+    /// <summary>Star rating 1–5.</summary>
+    public double Rating { get; private set; }
+
+    public string Comment { get; private set; } = string.Empty;
+
+    /// <summary>UTC timestamp of when the review was submitted.</summary>
+    public DateTimeOffset Date { get; private set; }
 }

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SharedKernel.Results;
 
+using DummyJson.Domain.Users;
+
 namespace DummyJson.Persistence.Identity;
 
 /// <summary>
@@ -62,14 +64,9 @@ public sealed class ApplicationUserManager : UserManager<ApplicationUser>
         var uniqueCheck = await CheckEmailUniqueAsync(email);
         if (uniqueCheck.IsFailure) return Result.Failure<ApplicationUser>(uniqueCheck.Error);
 
-        var user = new ApplicationUser
-        {
-            UserName = email, // Email as username fallback
-            Email = email,
-            FirstName = firstName,
-            LastName = lastName,
-            DomainUserId = Guid.CreateVersion7()
-        };
+        var userResult = ApplicationUser.Create(firstName, lastName, email, email, "");
+        if (userResult.IsFailure) return Result.Failure<ApplicationUser>(userResult.Error);
+        var user = userResult.Value;
 
         return await CreateUserAndRoleAsync(user, password);
     }
@@ -79,13 +76,9 @@ public sealed class ApplicationUserManager : UserManager<ApplicationUser>
         var uniqueCheck = await CheckUsernameUniqueAsync(username);
         if (uniqueCheck.IsFailure) return Result.Failure<ApplicationUser>(uniqueCheck.Error);
 
-        var user = new ApplicationUser
-        {
-            UserName = username,
-            FirstName = firstName,
-            LastName = lastName,
-            DomainUserId = Guid.CreateVersion7()
-        };
+        var userResult = ApplicationUser.Create(firstName, lastName, username, "", "");
+        if (userResult.IsFailure) return Result.Failure<ApplicationUser>(userResult.Error);
+        var user = userResult.Value;
 
         return await CreateUserAndRoleAsync(user, password);
     }
@@ -95,14 +88,9 @@ public sealed class ApplicationUserManager : UserManager<ApplicationUser>
         var uniqueCheck = await CheckPhoneUniqueAsync(phoneNumber);
         if (uniqueCheck.IsFailure) return Result.Failure<ApplicationUser>(uniqueCheck.Error);
 
-        var user = new ApplicationUser
-        {
-            UserName = phoneNumber, // Phone as username fallback
-            PhoneNumber = phoneNumber,
-            FirstName = firstName,
-            LastName = lastName,
-            DomainUserId = Guid.CreateVersion7()
-        };
+        var userResult = ApplicationUser.Create(firstName, lastName, phoneNumber, "", phoneNumber);
+        if (userResult.IsFailure) return Result.Failure<ApplicationUser>(userResult.Error);
+        var user = userResult.Value;
 
         return await CreateUserAndRoleAsync(user, password);
     }
@@ -182,16 +170,11 @@ public sealed class ApplicationUserManager : UserManager<ApplicationUser>
         var uniqueCheck = await CheckEmailUniqueAsync(email);
         if (uniqueCheck.IsFailure) return Result.Failure<ApplicationUser>(uniqueCheck.Error);
 
-        var newUser = new ApplicationUser
-        {
-            UserName = email,
-            Email = email,
-            EmailVerified = true, // Verified by Google
-            EmailConfirmed = true,
-            FirstName = tokenFirstName,
-            LastName = tokenLastName,
-            DomainUserId = Guid.CreateVersion7()
-        };
+        var userResult = ApplicationUser.Create(tokenFirstName, tokenLastName, email, email, "");
+        if (userResult.IsFailure) return Result.Failure<ApplicationUser>(userResult.Error);
+        
+        var newUser = userResult.Value;
+        newUser.EmailConfirmed = true;
 
         return await CreateUserAndRoleAsync(newUser);
     }

@@ -2,13 +2,15 @@ using DummyJson.Domain.Common.Primitives;
 using DummyJson.Domain.Recipes;
 using SharedKernel.Results;
 
+using DummyJson.Application.Common.Interfaces;
+
 namespace DummyJson.Application.Common.Repository;
 
 /// <summary>
 /// Strongly-typed repository for the <see cref="Recipe"/> aggregate root.
-/// Extends <see cref="IRepository{TEntity,TId}"/> with Recipe-specific queries.
+/// Extends <see cref="IMongoRepository{T}"/> with Recipe-specific queries.
 /// </summary>
-public interface IRecipeRepository : IRepository<Recipe, Guid>
+public interface IRecipeRepository : IMongoRepository<Recipe>
 {
     /// <summary>Returns recipes filtered by cuisine (case-insensitive).</summary>
     Task<IReadOnlyList<Recipe>> GetByCuisineAsync(string cuisine, CancellationToken ct = default);

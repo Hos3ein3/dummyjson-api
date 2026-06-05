@@ -29,4 +29,8 @@
     <ProjectReference Include="..\DummyJson.Domain\DummyJson.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

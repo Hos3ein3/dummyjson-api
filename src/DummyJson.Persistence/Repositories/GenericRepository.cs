@@ -15,7 +15,7 @@ namespace DummyJson.Persistence.Repositories;
 /// <typeparam name="TEntity">Entity type.</typeparam>
 /// <typeparam name="TId">Primary key type.</typeparam>
 public class GenericRepository<TEntity, TId> : IRepository<TEntity, TId>
-    where TEntity : Entity<TId>
+    where TEntity : class, IEntity<TId>
     where TId : struct
 {
     protected readonly AppDbContext _context;

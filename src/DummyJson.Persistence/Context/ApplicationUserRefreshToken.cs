@@ -1,14 +1,15 @@
 using System;
+using DummyJson.Domain.Users;
 
 namespace DummyJson.Persistence.Context;
 
 /// <summary>
-/// Dedicated table for tracking Refresh Tokens per user/device.
-/// Allows a user to be logged in on multiple devices simultaneously.
+/// Stores refresh tokens associated with a User.
+/// Included in the EF Core model to allow querying and revoking.
 /// </summary>
 public sealed class ApplicationUserRefreshToken
 {
-    public Guid Id { get; set; } = DummyJson.Domain.Common.Primitives.IdGenerator.NewId();
+    public Guid Id { get; set; } = Guid.CreateVersion7();
     
     public Guid UserId { get; set; }
     public ApplicationUser User { get; set; } = null!;

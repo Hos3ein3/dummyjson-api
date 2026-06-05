@@ -12,7 +12,6 @@
           "Asp.Versioning.Mvc": "8.1.0",
           "Asp.Versioning.Mvc.ApiExplorer": "8.1.0",
           "AspNetCore.HealthChecks.MongoDb": "9.0.0",
-          "AspNetCore.HealthChecks.MySql": "9.0.0",
           "AspNetCore.HealthChecks.NpgSql": "9.0.0",
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "AspNetCore.HealthChecks.UI": "9.0.0",
@@ -93,17 +92,6 @@
         },
         "runtime": {
           "lib/net8.0/HealthChecks.MongoDb.dll": {
-            "assemblyVersion": "9.0.0.0",
-            "fileVersion": "9.0.0.0"
-          }
-        }
-      },
-      "AspNetCore.HealthChecks.MySql/9.0.0": {
-        "dependencies": {
-          "MySqlConnector": "2.3.5"
-        },
-        "runtime": {
-          "lib/net8.0/HealthChecks.MySql.dll": {
             "assemblyVersion": "9.0.0.0",
             "fileVersion": "9.0.0.0"
           }
@@ -2863,6 +2851,9 @@
         }
       },
       "DummyJson.Domain/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Identity.Stores": "9.0.5"
+        },
         "runtime": {
           "DummyJson.Domain.dll": {
             "assemblyVersion": "1.0.0.0",
@@ -2966,13 +2957,6 @@
       "sha512": "sha512-WAmROqEXlVzjgCdEa9Zor2l6T29jsnKMJQPGbTnkrgpyqPcjwOomuh91CiAebmeWJ/CKenVX+fV/VFffnskgvw==",
       "path": "aspnetcore.healthchecks.mongodb/9.0.0",
       "hashPath": "aspnetcore.healthchecks.mongodb.9.0.0.nupkg.sha512"
-    },
-    "AspNetCore.HealthChecks.MySql/9.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-v9UqyTFVO79tWVM2uRuUWgauZAAHdLxEqa1mujnztBbG5MzIy78ciN6fICfFAZPNJQydYmkZHqPx7/eIuJog9A==",
-      "path": "aspnetcore.healthchecks.mysql/9.0.0",
-      "hashPath": "aspnetcore.healthchecks.mysql.9.0.0.nupkg.sha512"
     },
     "AspNetCore.HealthChecks.NpgSql/9.0.0": {
       "type": "package",

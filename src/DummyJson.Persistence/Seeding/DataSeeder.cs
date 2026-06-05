@@ -7,6 +7,7 @@ using DummyJson.Domain.Posts;
 using DummyJson.Domain.Products;
 using DummyJson.Domain.Quotes;
 using DummyJson.Domain.Recipes;
+using DummyJson.Domain.Tags;
 using DummyJson.Domain.Todos;
 using DummyJson.Domain.Users;
 using DummyJson.Persistence.Context;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using DomainTag = DummyJson.Domain.Tags.Tag;
 
 namespace DummyJson.Persistence.Seeding;
 
@@ -35,6 +37,7 @@ public sealed class DataSeeder
     private readonly ILogger<DataSeeder> _logger;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
+    private string? _systemUserId;
 
     private static readonly JsonSerializerOptions _jsonOptions = new()
     {
@@ -93,6 +96,11 @@ public sealed class DataSeeder
         await SeedQuotesAsync(seedDataPath, cancellationToken);
         await SeedCommentsAsync(seedDataPath, cancellationToken);
         await SeedRecipesAsync(seedDataPath, wwwRootPath, seedImages, cancellationToken);
+
+        // Relational shadow tables must be seeded FIRST so Products have CategoryIds
+        await SeedProductCategoriesAsync(seedDataPath, cancellationToken);
+        await SeedTagsAsync(seedDataPath, cancellationToken);
+
         await SeedProductsAsync(seedDataPath, wwwRootPath, seedImages, cancellationToken);
         await SeedPostsAsync(seedDataPath, cancellationToken);
 
@@ -105,9 +113,10 @@ public sealed class DataSeeder
     {
         var roles = new[]
         {
-            new ApplicationRole("Developer") { Priority = 3 },
-            new ApplicationRole("Admin") { Priority = 2 },
-            new ApplicationRole("System") { Priority = 1 }
+            new ApplicationRole("Developer") { Priority = 4 },
+            new ApplicationRole("Admin") { Priority = 3 },
+            new ApplicationRole("System") { Priority = 2 },
+            new ApplicationRole("User") { Priority = 1 }
         };
 
         foreach (var role in roles)
@@ -118,31 +127,60 @@ public sealed class DataSeeder
 
         if (await _userManager.FindByEmailAsync("developer@dummy.com") is null)
         {
-            var dev = new ApplicationUser
+            var userResult = ApplicationUser.Create("Dev", "", "developer", "developer@dummy.com", "");
+            if (userResult.IsSuccess)
             {
-                UserName = "developer",
-                Email = "developer@dummy.com",
-                FirstName = "Dev",
-                DomainUserId = Guid.CreateVersion7()
-            };
-            await _userManager.CreateAsync(dev, "Dev@1234");
-            await _userManager.AddToRoleAsync(dev, "Developer");
+                var dev = userResult.Value;
+                dev.Id = Guid.CreateVersion7(); // Use a new ID or rely on Identity generating it
+                await _userManager.CreateAsync(dev, "Dev@1234");
+                await _userManager.AddToRoleAsync(dev, "Developer");
+            }
         }
 
         if (await _userManager.FindByEmailAsync("admin@dummy.com") is null)
         {
-            var admin = new ApplicationUser
+            var userResult = ApplicationUser.Create("Admin", "", "admin", "admin@dummy.com", "");
+            if (userResult.IsSuccess)
             {
-                UserName = "admin",
-                Email = "admin@dummy.com",
-                FirstName = "Admin",
-                DomainUserId = Guid.CreateVersion7()
-            };
-            await _userManager.CreateAsync(admin, "Admin@123");
-            await _userManager.AddToRoleAsync(admin, "Admin");
+                var admin = userResult.Value;
+                admin.Id = Guid.CreateVersion7();
+                await _userManager.CreateAsync(admin, "Admin@123");
+                await _userManager.AddToRoleAsync(admin, "Admin");
+            }
+        }
+        var sysUser = await _userManager.FindByEmailAsync("system@dummy.com");
+        if (sysUser is null)
+        {
+            var userResult = ApplicationUser.Create("System", "", "system", "system@dummy.com", "");
+            if (userResult.IsSuccess)
+            {
+                var system = userResult.Value;
+                system.Id = Guid.CreateVersion7();
+                await _userManager.CreateAsync(system, "System@123");
+                await _userManager.AddToRoleAsync(system, "System");
+                _systemUserId = system.Id.ToString();
+            }
+        }
+        else
+        {
+            _systemUserId = sysUser.Id.ToString();
         }
 
         _logger.LogInformation("Identity roles and users seeded.");
+    }
+
+    private void SetAuditFields(IEnumerable<object> entities)
+    {
+        if (_systemUserId == null) return;
+        foreach (var entity in entities)
+        {
+            if (entity is DummyJson.Domain.Common.Interfaces.IAuditable auditable)
+            {
+                var type = entity.GetType();
+                type.GetProperty(nameof(DummyJson.Domain.Common.Interfaces.IAuditable.CreatedBy))?.SetValue(entity, _systemUserId);
+                type.GetProperty(nameof(DummyJson.Domain.Common.Interfaces.IAuditable.UpdatedAt))?.SetValue(entity, null);
+            }
+        }
     }
 
     // ── Users ─────────────────────────────────────────────────────────────────
@@ -153,7 +191,7 @@ public sealed class DataSeeder
         bool seedImages,
         CancellationToken ct)
     {
-        if (await _dbContext.DomainUsers.AnyAsync(ct))
+        if (await _dbContext.Users.AnyAsync(ct))
         {
             _logger.LogInformation("Users already seeded, skipping.");
             return;
@@ -165,7 +203,14 @@ public sealed class DataSeeder
         var imageDir = Path.Combine(wwwRoot, "images", "users");
         if (seedImages) EnsureDirectory(imageDir);
 
-        var users = new List<User>(dtos.Count);
+        var userRole = await _roleManager.FindByNameAsync("User");
+        var userRoleId = userRole?.Id ?? Guid.Empty;
+
+        var users = new List<ApplicationUser>(dtos.Count);
+        var userRoles = new List<IdentityUserRole<Guid>>();
+        var userAddresses = new List<UserAddress>();
+        var hasher = new PasswordHasher<ApplicationUser>();
+
         foreach (var dto in dtos)
         {
             string? localImage = dto.Image;
@@ -177,13 +222,47 @@ public sealed class DataSeeder
                     ?? dto.Image;
             }
 
-            var result = User.Create(
+            DateOnly? parsedBirthDate = null;
+            if (DateOnly.TryParse(dto.BirthDate, out var bDate))
+                parsedBirthDate = bDate;
+
+            var result = ApplicationUser.Create(
                 dto.FirstName, dto.LastName, dto.Username, dto.Email,
-                dto.Phone ?? "", localImage, dto.Gender, dto.BirthDate);
+                dto.Phone ?? "", localImage, dto.Gender, parsedBirthDate);
 
             if (result.IsSuccess)
-                users.Add(result.Value);
+            {
+                var user = result.Value;
+                user.PasswordHash = hasher.HashPassword(user, "User@1234");
+                user.NormalizedEmail = user.Email?.ToUpperInvariant();
+                user.NormalizedUserName = user.UserName?.ToUpperInvariant();
+                user.SecurityStamp = Guid.NewGuid().ToString();
+
+                users.Add(user);
+
+                if (userRoleId != Guid.Empty)
+                {
+                    userRoles.Add(new IdentityUserRole<Guid> { UserId = user.Id, RoleId = userRoleId });
+                }
+
+                if (dto.Address is not null)
+                {
+                    userAddresses.Add(new UserAddress
+                    {
+                        UserId = user.Id,
+                        Street = dto.Address.Address,
+                        City = dto.Address.City,
+                        State = dto.Address.State,
+                        PostalCode = dto.Address.PostalCode,
+                        Country = dto.Address.Country,
+                        Latitude = dto.Address.Coordinates?.Lat,
+                        Longitude = dto.Address.Coordinates?.Lng
+                    });
+                }
+            }
         }
+
+        SetAuditFields(users);
 
         // Bulk insert — bypasses change-tracking, no SaveChangesAsync needed
         await _dbContext.BulkInsertAsync(users, new BulkConfig
@@ -192,6 +271,12 @@ public sealed class DataSeeder
             PreserveInsertOrder = true,
             SetOutputIdentity = false
         }, cancellationToken: ct);
+
+        if (userRoles.Count > 0)
+            await _dbContext.BulkInsertAsync(userRoles, new BulkConfig { BatchSize = 500 }, cancellationToken: ct);
+
+        if (userAddresses.Count > 0)
+            await _mongoContext.UserAddresses.InsertManyAsync(userAddresses, null, ct);
 
         _logger.LogInformation("Seeded {Count} users.", users.Count);
     }
@@ -219,6 +304,7 @@ public sealed class DataSeeder
             todos.Add(result.Value);
         }
 
+        SetAuditFields(todos);
         await _dbContext.BulkInsertAsync(todos, new BulkConfig
         {
             BatchSize = 500,
@@ -228,6 +314,8 @@ public sealed class DataSeeder
 
         _logger.LogInformation("Seeded {Count} todos.", todos.Count);
     }
+
+
 
     // ── Carts ─────────────────────────────────────────────────────────────────
 
@@ -265,14 +353,24 @@ public sealed class DataSeeder
             carts.Add(cart);
         }
 
-        // Insert carts first (parent), then items (children)
+        SetAuditFields(carts);
         await _dbContext.BulkInsertAsync(carts, new BulkConfig
         {
             BatchSize = 500,
             PreserveInsertOrder = true,
-            SetOutputIdentity = false,
-            IncludeGraph = true   // cascade insert navigation properties (CartItems)
+            SetOutputIdentity = false
         }, cancellationToken: ct);
+
+        var allItems = carts.SelectMany(c => c.Items).ToList();
+        if (allItems.Count > 0)
+        {
+            await _dbContext.BulkInsertAsync(allItems, new BulkConfig
+            {
+                BatchSize = 1000,
+                PreserveInsertOrder = true,
+                SetOutputIdentity = false
+            }, cancellationToken: ct);
+        }
 
         _logger.LogInformation("Seeded {Count} carts.", carts.Count);
     }
@@ -285,10 +383,7 @@ public sealed class DataSeeder
         bool seedImages,
         CancellationToken ct)
     {
-        var count = await _mongoContext.Products
-            .CountDocumentsAsync(FilterDefinition<Product>.Empty, null, ct);
-
-        if (count > 0)
+        if (await _dbContext.Products.AnyAsync(ct))
         {
             _logger.LogInformation("Products already seeded, skipping.");
             return;
@@ -297,10 +392,19 @@ public sealed class DataSeeder
         var dtos = LoadJson<ProductSeedDto>("products.json", path, "products");
         if (dtos is null || dtos.Count == 0) return;
 
+        var categories = await _dbContext.ProductCategories.ToDictionaryAsync(c => c.Slug, c => c.Id, ct);
+        
+        var tags = await _mongoContext.Tags.Find(_ => true).ToListAsync(ct);
+        var tagsMap = tags.ToDictionary(t => t.Name, t => t.Id, StringComparer.OrdinalIgnoreCase);
+
+        var products = new List<Product>(dtos.Count);
+
         var thumbDir = Path.Combine(wwwRoot, "images", "products");
         if (seedImages) EnsureDirectory(thumbDir);
 
-        var products = new List<Product>(dtos.Count);
+        var productImages = new List<ProductImage>();
+        var productTags = new List<ProductTag>();
+        var productReviews = new List<ProductReview>();
 
         foreach (var dto in dtos)
         {
@@ -310,53 +414,89 @@ public sealed class DataSeeder
             if (seedImages)
             {
                 var sku = SanitizeFilename(dto.Sku ?? dto.Title);
-
-                // Download thumbnail
                 if (!string.IsNullOrWhiteSpace(dto.Thumbnail))
                 {
                     var thumbFile = $"{sku}-thumb.jpg";
-                    thumbnail = await DownloadImageAsync(dto.Thumbnail, thumbDir, thumbFile, ct)
-                        ?? dto.Thumbnail;
+                    thumbnail = await DownloadImageAsync(dto.Thumbnail, thumbDir, thumbFile, ct) ?? dto.Thumbnail;
                 }
-
-                // Download product images
                 for (var i = 0; i < localImages.Count; i++)
                 {
                     var imgUrl = localImages[i];
                     if (string.IsNullOrWhiteSpace(imgUrl)) continue;
-
                     var imgFile = $"{sku}-{i}.jpg";
-                    localImages[i] = await DownloadImageAsync(imgUrl, thumbDir, imgFile, ct)
-                        ?? imgUrl;
+                    localImages[i] = await DownloadImageAsync(imgUrl, thumbDir, imgFile, ct) ?? imgUrl;
                 }
             }
 
+            var categoryId = categories.GetValueOrDefault(dto.Category ?? "", Guid.Empty);
+
             var result = Product.Create(
                 dto.Title, dto.Description, dto.Price, dto.DiscountPercentage,
-                dto.Stock, dto.Brand ?? "", dto.Category, thumbnail,
-                localImages, dto.Tags ?? [], dto.Sku ?? "",
-                dto.Meta?.Barcode ?? "", dto.MinimumOrderQuantity,
+                dto.Stock, dto.Brand ?? "", categoryId, thumbnail,
+                dto.Sku ?? "", dto.Meta?.Barcode ?? "", dto.MinimumOrderQuantity,
                 dto.WarrantyInformation ?? "", dto.ShippingInformation ?? "",
                 dto.AvailabilityStatus ?? "In Stock", dto.ReturnPolicy ?? "");
 
             if (result.IsSuccess)
+            {
                 products.Add(result.Value);
+                
+                // Add ProductImages to MongoDB list
+                foreach (var imgUrl in localImages)
+                {
+                    productImages.Add(new ProductImage(result.Value.Id, imgUrl));
+                }
+
+                // Add ProductTags to MongoDB list
+                if (dto.Tags is not null)
+                {
+                    foreach (var tagName in dto.Tags)
+                    {
+                        if (tagsMap.TryGetValue(tagName, out var tagId))
+                            productTags.Add(new ProductTag(result.Value.Id, tagId));
+                    }
+                }
+
+                // Add ProductReviews to MongoDB list
+                if (dto.Reviews is not null)
+                {
+                    foreach (var r in dto.Reviews)
+                    {
+                        var review = new ProductReview(
+                            result.Value.Id,
+                            r.ReviewerName ?? "Anonymous",
+                            r.ReviewerEmail ?? "no-reply@dummyjson.com",
+                            r.Rating,
+                            r.Comment ?? string.Empty
+                        );
+                        // If we wanted to preserve the exact seed date, we'd add a setter or reflection.
+                        // For now, ProductReview sets Date = UtcNow in its constructor.
+                        productReviews.Add(review);
+                    }
+                }
+            }
         }
 
         if (products.Count > 0)
-            await _mongoContext.Products.InsertManyAsync(products, null, ct);
+        {
+            SetAuditFields(products);
+            await _dbContext.BulkInsertAsync(products, new BulkConfig { BatchSize = 500, PreserveInsertOrder = true }, cancellationToken: ct);
+            if (productTags.Count > 0)
+                await _mongoContext.ProductTags.InsertManyAsync(productTags, null, ct);
+            if (productImages.Count > 0)
+                await _mongoContext.ProductImages.InsertManyAsync(productImages, null, ct);
+            if (productReviews.Count > 0)
+                await _mongoContext.ProductReviews.InsertManyAsync(productReviews, null, ct);
+        }
 
-        _logger.LogInformation("Seeded {Count} products.", products.Count);
+        _logger.LogInformation("Seeded {Count} products and their images.", products.Count);
     }
 
     // ── Posts (MongoDB) ───────────────────────────────────────────────────────
 
     private async Task SeedPostsAsync(string path, CancellationToken ct)
     {
-        var count = await _mongoContext.Posts
-            .CountDocumentsAsync(FilterDefinition<Post>.Empty, null, ct);
-
-        if (count > 0)
+        if (await _dbContext.Posts.AnyAsync(ct))
         {
             _logger.LogInformation("Posts already seeded, skipping.");
             return;
@@ -365,16 +505,36 @@ public sealed class DataSeeder
         var dtos = LoadJson<PostSeedDto>("posts.json", path, "posts");
         if (dtos is null || dtos.Count == 0) return;
 
+        var tags = await _mongoContext.Tags.Find(_ => true).ToListAsync(ct);
+        var tagsMap = tags.ToDictionary(t => t.Name, t => t.Id, StringComparer.OrdinalIgnoreCase);
+
         var posts = new List<Post>(dtos.Count);
+        var postTags = new List<PostTag>();
+
         foreach (var dto in dtos)
         {
-            var result = Post.Create(Guid.CreateVersion7(), dto.Title, dto.Body, dto.Tags ?? []);
+            var result = Post.Create(Guid.CreateVersion7(), dto.Title, dto.Body, new List<string>());
             if (result.IsSuccess)
+            {
                 posts.Add(result.Value);
+                if (dto.Tags is not null)
+                {
+                    foreach (var tagName in dto.Tags)
+                    {
+                        if (tagsMap.TryGetValue(tagName, out var tagId))
+                            postTags.Add(new PostTag(result.Value.Id, tagId));
+                    }
+                }
+            }
         }
 
         if (posts.Count > 0)
-            await _mongoContext.Posts.InsertManyAsync(posts, null, ct);
+        {
+            SetAuditFields(posts);
+            await _dbContext.BulkInsertAsync(posts, new BulkConfig { BatchSize = 500, PreserveInsertOrder = true }, cancellationToken: ct);
+            if (postTags.Count > 0)
+                await _mongoContext.PostTags.InsertManyAsync(postTags, null, ct);
+        }
 
         _logger.LogInformation("Seeded {Count} posts.", posts.Count);
     }
@@ -400,6 +560,7 @@ public sealed class DataSeeder
                 quotes.Add(result.Value);
         }
 
+        SetAuditFields(quotes);
         await _dbContext.BulkInsertAsync(quotes, new BulkConfig
         {
             BatchSize = 500,
@@ -439,6 +600,7 @@ public sealed class DataSeeder
                 comments.Add(result.Value);
         }
 
+        SetAuditFields(comments);
         await _dbContext.BulkInsertAsync(comments, new BulkConfig
         {
             BatchSize = 500,
@@ -457,7 +619,8 @@ public sealed class DataSeeder
         bool seedImages,
         CancellationToken ct)
     {
-        if (await _dbContext.Recipes.AnyAsync(ct))
+        var count = await _mongoContext.Recipes.CountDocumentsAsync(FilterDefinition<Recipe>.Empty, null, ct);
+        if (count > 0)
         {
             _logger.LogInformation("Recipes already seeded, skipping.");
             return;
@@ -504,17 +667,133 @@ public sealed class DataSeeder
                 recipes.Add(result.Value);
         }
 
-        await _dbContext.BulkInsertAsync(recipes, new BulkConfig
+        if (recipes.Count > 0)
         {
-            BatchSize = 500,
-            PreserveInsertOrder = true,
-            SetOutputIdentity = false
-        }, cancellationToken: ct);
+            SetAuditFields(recipes);
+            await _mongoContext.Recipes.InsertManyAsync(recipes, null, ct);
+        }
 
         _logger.LogInformation("Seeded {Count} recipes.", recipes.Count);
     }
 
+    // ── Product Categories (PostgreSQL — derived from MongoDB products) ────────
+
+    /// <summary>
+    /// Reads distinct category slugs from the MongoDB Products collection and
+    /// inserts them into the relational <c>ProductCategories</c> table.
+    /// Each slug becomes both the <c>Slug</c> (e.g. "kitchen-accessories") and
+    /// a title-cased <c>Name</c> (e.g. "Kitchen Accessories").
+    /// Idempotent — skips if any categories already exist.
+    /// </summary>
+    private async Task SeedProductCategoriesAsync(string path, CancellationToken ct)
+    {
+        if (await _dbContext.ProductCategories.AnyAsync(ct))
+        {
+            _logger.LogInformation("ProductCategories already seeded, skipping.");
+            return;
+        }
+
+        var dtos = LoadJson<ProductSeedDto>("products.json", path, "products");
+        if (dtos is null || dtos.Count == 0) return;
+
+        var slugs = dtos.Where(d => !string.IsNullOrWhiteSpace(d.Category))
+                        .Select(d => d.Category)
+                        .Distinct()
+                        .ToList();
+
+        if (slugs.Count == 0) return;
+
+        var categories = new List<ProductCategory>(slugs.Count);
+        foreach (var slug in slugs.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct())
+        {
+            // Convert slug "kitchen-accessories" → "Kitchen Accessories"
+            var name = System.Globalization.CultureInfo.InvariantCulture
+                .TextInfo.ToTitleCase(slug.Replace('-', ' '));
+
+            var result = ProductCategory.Create(name, slug);
+            if (result.IsSuccess)
+                categories.Add(result.Value);
+        }
+
+        SetAuditFields(categories);
+        await _dbContext.BulkInsertAsync(categories, new BulkConfig
+        {
+            BatchSize = 200,
+            PreserveInsertOrder = true,
+            SetOutputIdentity = false
+        }, cancellationToken: ct);
+
+        _logger.LogInformation("Seeded {Count} product categories.", categories.Count);
+    }
+
+    private async Task SeedTagsAsync(string path, CancellationToken ct)
+    {
+        if (await _mongoContext.Tags.Find(_ => true).AnyAsync(ct))
+        {
+            _logger.LogInformation("Tags already seeded in MongoDB, skipping.");
+            return;
+        }
+
+        var productDtos = LoadJson<ProductSeedDto>("products.json", path, "products") ?? [];
+        var postDtos = LoadJson<PostSeedDto>("posts.json", path, "posts") ?? [];
+
+        var productTags = productDtos
+            .Where(p => p.Tags != null)
+            .SelectMany(p => p.Tags!)
+            .Where(t => !string.IsNullOrWhiteSpace(t))
+            .Distinct(StringComparer.OrdinalIgnoreCase);
+
+        var postTags = postDtos
+            .Where(p => p.Tags != null)
+            .SelectMany(p => p.Tags!)
+            .Where(t => !string.IsNullOrWhiteSpace(t))
+            .Distinct(StringComparer.OrdinalIgnoreCase);
+
+        var tagsDict = new Dictionary<string, TagType>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var pt in productTags)
+            tagsDict[pt] = TagType.Product;
+
+        foreach (var pt in postTags)
+        {
+            if (tagsDict.ContainsKey(pt))
+                tagsDict[pt] = TagType.Shared;
+            else
+                tagsDict[pt] = TagType.Post;
+        }
+
+        var tagsToInsert = new List<DummyJson.Domain.Tags.Tag>(tagsDict.Count);
+        foreach (var kvp in tagsDict)
+        {
+            var result = DummyJson.Domain.Tags.Tag.Create(kvp.Key, kvp.Value);
+            if (result.IsSuccess)
+                tagsToInsert.Add(result.Value);
+        }
+
+        if (tagsToInsert.Count > 0)
+        {
+            SetAuditFields(tagsToInsert);
+            await _mongoContext.Tags.InsertManyAsync(tagsToInsert, null, ct);
+        }
+
+        _logger.LogInformation("Seeded {Count} tags in MongoDB.", tagsToInsert.Count);
+    }
+    // ── Projection DTOs for MongoDB tag queries ───────────────────────────────
+
+    private sealed class ProductTagProjection
+    {
+        public Guid Id { get; set; }
+        public List<string>? Tags { get; set; }
+    }
+
+    private sealed class PostTagProjection
+    {
+        public Guid Id { get; set; }
+        public List<string>? Tags { get; set; }
+    }
+
     // ── JSON Loader ───────────────────────────────────────────────────────────
+
 
     /// <summary>
     /// Reads a JSON file and deserializes it. Handles two formats:
@@ -648,8 +927,22 @@ public sealed class DataSeeder
         string? Phone,
         string? Image,
         string? Gender,
-        DateOnly? BirthDate,
-        string? Role);
+        string? BirthDate,
+        string? Role,
+        UserAddressSeedDto? Address);
+
+    private sealed record UserAddressSeedDto(
+        string? Address,
+        string? City,
+        string? State,
+        string? StateCode,
+        string? PostalCode,
+        CoordinatesSeedDto? Coordinates,
+        string? Country);
+
+    private sealed record CoordinatesSeedDto(
+        double Lat,
+        double Lng);
 
     private sealed record ProductSeedDto(
         string Title,
@@ -668,7 +961,15 @@ public sealed class DataSeeder
         string? AvailabilityStatus,
         string? ReturnPolicy,
         int MinimumOrderQuantity,
-        ProductMetaSeedDto? Meta);
+        ProductMetaSeedDto? Meta,
+        List<ReviewSeedDto>? Reviews);
+
+    private sealed record ReviewSeedDto(
+        int Rating,
+        string? Comment,
+        string? Date,
+        string? ReviewerName,
+        string? ReviewerEmail);
 
     private sealed record ProductMetaSeedDto(string? Barcode);
 

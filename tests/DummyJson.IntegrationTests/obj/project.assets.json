@@ -86,23 +86,6 @@
           }
         }
       },
-      "AspNetCore.HealthChecks.MySql/9.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.11",
-          "MySqlConnector": "2.3.1"
-        },
-        "compile": {
-          "lib/net8.0/HealthChecks.MySql.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/HealthChecks.MySql.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "AspNetCore.HealthChecks.NpgSql/9.0.0": {
         "type": "package",
         "dependencies": {
@@ -5496,7 +5479,6 @@
           "Asp.Versioning.Mvc": "8.1.0",
           "Asp.Versioning.Mvc.ApiExplorer": "8.1.0",
           "AspNetCore.HealthChecks.MongoDb": "9.0.0",
-          "AspNetCore.HealthChecks.MySql": "9.0.0",
           "AspNetCore.HealthChecks.Npgsql": "9.0.0",
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "AspNetCore.HealthChecks.UI": "9.0.0",
@@ -5558,6 +5540,9 @@
       "DummyJson.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "Microsoft.Extensions.Identity.Stores": "9.0.5"
+        },
         "compile": {
           "bin/placeholder/DummyJson.Domain.dll": {}
         },
@@ -5714,23 +5699,6 @@
         "lib/net8.0/HealthChecks.MongoDb.xml",
         "lib/netstandard2.1/HealthChecks.MongoDb.dll",
         "lib/netstandard2.1/HealthChecks.MongoDb.xml"
-      ]
-    },
-    "AspNetCore.HealthChecks.MySql/9.0.0": {
-      "sha512": "v9UqyTFVO79tWVM2uRuUWgauZAAHdLxEqa1mujnztBbG5MzIy78ciN6fICfFAZPNJQydYmkZHqPx7/eIuJog9A==",
-      "type": "package",
-      "path": "aspnetcore.healthchecks.mysql/9.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "aspnetcore.healthchecks.mysql.9.0.0.nupkg.sha512",
-        "aspnetcore.healthchecks.mysql.nuspec",
-        "icon.png",
-        "lib/net8.0/HealthChecks.MySql.dll",
-        "lib/net8.0/HealthChecks.MySql.xml",
-        "lib/netstandard2.0/HealthChecks.MySql.dll",
-        "lib/netstandard2.0/HealthChecks.MySql.xml"
       ]
     },
     "AspNetCore.HealthChecks.NpgSql/9.0.0": {
@@ -14389,6 +14357,7 @@
           "Microsoft.Extensions.Configuration.Abstractions": "9.0.5",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.5",
           "Microsoft.Extensions.Http.Resilience": "9.0.0",
+          "Microsoft.Extensions.Identity.Stores": "9.0.5",
           "Microsoft.Extensions.Localization.Abstractions": "10.0.8",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.5",
           "Microsoft.FeatureManagement.AspNetCore": "4.0.0",
