@@ -55,7 +55,7 @@ jobs:
 
       - name: Copy docker-compose
         run: |
-          cp docker-compose.yml "$DEPLOY_PATH/docker-compose.yml"
+          cp docker-compose.yaml "$DEPLOY_PATH/docker-compose.yaml"
 
       - name: Copy .env
         run: |
