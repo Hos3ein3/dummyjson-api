@@ -11,7 +11,7 @@ namespace DummyJson.Persistence.Repositories;
 
 public class MongoRepository<T> : IMongoRepository<T> where T : MongoEntity
 {
-    private readonly IMongoCollection<T> _collection;
+    protected readonly IMongoCollection<T> _collection;
 
     public MongoRepository(MongoDbContext dbContext)
     {

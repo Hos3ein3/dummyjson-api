@@ -6,13 +6,13 @@ namespace DummyJson.Domain.Quotes;
 
 /// <summary>
 /// Quote aggregate root — corresponds to DummyJSON /quotes resource.
-/// Stored in PostgreSQL via EF Core.
+/// Stored in MongoDB via MongoDbContext.
 /// </summary>
-public sealed class Quote : AggregateRoot<Guid>, IAuditable, ISoftDelete
+public sealed class Quote : MongoEntity, IAuditable, ISoftDelete
 {
     private Quote() { }
 
-    private Quote(Guid id, string quote, string author) : base(id)
+    private Quote(string quote, string author)
     {
         QuoteText = quote;
         Author = author;
@@ -43,7 +43,7 @@ public sealed class Quote : AggregateRoot<Guid>, IAuditable, ISoftDelete
         if (string.IsNullOrWhiteSpace(author))
             return Result.Failure<Quote>(Error.Validation(nameof(author), "Author cannot be empty."));
 
-        return Result.Success(new Quote(Guid.CreateVersion7(), quote, author));
+        return Result.Success(new Quote(quote, author));
     }
 
     // ── Behaviour ─────────────────────────────────────────────────────────────

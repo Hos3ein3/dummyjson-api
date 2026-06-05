@@ -7,19 +7,17 @@ namespace DummyJson.Domain.Comments;
 /// <summary>
 /// Comment aggregate root — corresponds to DummyJSON /comments resource.
 /// Belongs to a Post identified by <see cref="PostId"/>.
-/// Stored in PostgreSQL via EF Core.
+/// Stored in MongoDB via MongoDbContext.
 /// </summary>
-public sealed class Comment : AggregateRoot<Guid>, IAuditable, ISoftDelete
+public sealed class Comment : MongoEntity, IAuditable, ISoftDelete
 {
     private Comment() { }
 
-    private Comment(Guid id, string body, Guid? postId, string username, string fullName)
-        : base(id)
+    private Comment(string body, Guid? postId, Guid userId)
     {
         Body = body;
         PostId = postId;
-        Username = username;
-        FullName = fullName;
+        UserId = userId;
         CreatedAt = DateTimeOffset.UtcNow;
     }
 
@@ -32,11 +30,8 @@ public sealed class Comment : AggregateRoot<Guid>, IAuditable, ISoftDelete
     /// </summary>
     public Guid? PostId { get; private set; }
 
-    /// <summary>Username of the commenter (denormalised from the user sub-object).</summary>
-    public string Username { get; private set; } = string.Empty;
-
-    /// <summary>Full name of the commenter (denormalised from the user sub-object).</summary>
-    public string FullName { get; private set; } = string.Empty;
+    /// <summary>User who authored the comment.</summary>
+    public Guid UserId { get; private set; }
 
     /// <summary>Like count on this comment.</summary>
     public int Likes { get; private set; }
@@ -57,14 +52,13 @@ public sealed class Comment : AggregateRoot<Guid>, IAuditable, ISoftDelete
     public static Result<Comment> Create(
         string body,
         Guid? postId,
-        string username,
-        string fullName,
+        Guid userId,
         int likes = 0)
     {
         if (string.IsNullOrWhiteSpace(body))
             return Result.Failure<Comment>(Error.Validation(nameof(body), "Comment body cannot be empty."));
 
-        var comment = new Comment(Guid.CreateVersion7(), body, postId, username, fullName);
+        var comment = new Comment(body, postId, userId);
         comment.Likes = likes;
         return Result.Success(comment);
     }

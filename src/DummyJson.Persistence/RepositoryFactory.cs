@@ -18,10 +18,6 @@ public sealed class RepositoryFactory : IRepositoryFactory
     private IUserRepository? _users;
     private ICartRepository? _carts;
     private ITodoRepository? _todos;
-    private IQuoteRepository? _quotes;
-    private ICommentRepository? _comments;
-
-
     public RepositoryFactory(AppDbContext context)
     {
         _context = context;
@@ -38,13 +34,5 @@ public sealed class RepositoryFactory : IRepositoryFactory
     /// <inheritdoc/>
     public ITodoRepository Todos
         => _todos ??= new TodoRepository(_context);
-
-    /// <inheritdoc/>
-    public IQuoteRepository Quotes
-        => _quotes ??= new QuoteRepository(_context);
-
-    /// <inheritdoc/>
-    public ICommentRepository Comments
-        => _comments ??= new CommentRepository(_context);
 
 }

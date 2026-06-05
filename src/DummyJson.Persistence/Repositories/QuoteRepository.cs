@@ -1,31 +1,39 @@
 using DummyJson.Application.Common.Repository;
 using DummyJson.Domain.Quotes;
 using DummyJson.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace DummyJson.Persistence.Repositories;
 
 /// <summary>
-/// EF Core implementation of <see cref="IQuoteRepository"/>.
-/// Inherits all generic CRUD + bulk operations from <see cref="GenericRepository{TEntity,TId}"/>.
+/// MongoDB implementation of <see cref="IQuoteRepository"/>.
 /// </summary>
-public sealed class QuoteRepository : GenericRepository<Quote, Guid>, IQuoteRepository
+public sealed class QuoteRepository : MongoRepository<Quote>, IQuoteRepository
 {
-    public QuoteRepository(AppDbContext context) : base(context) { }
+    public QuoteRepository(MongoDbContext context) : base(context) { }
 
     /// <inheritdoc/>
     public async Task<IReadOnlyList<Quote>> GetByAuthorAsync(
         string author, CancellationToken ct = default)
-        => await _dbSet
-            .AsNoTracking()
-            .Where(q => EF.Functions.ILike(q.Author, $"%{author}%"))
-            .OrderBy(q => q.Author)
+    {
+        var filter = Builders<Quote>.Filter.Regex(q => q.Author, new BsonRegularExpression(author, "i"));
+        
+        return await _collection.Find(filter)
+            .SortBy(q => q.Author)
             .ToListAsync(ct);
+    }
 
     /// <inheritdoc/>
     public async Task<Quote?> GetRandomAsync(CancellationToken ct = default)
-        => await _dbSet
-            .AsNoTracking()
-            .OrderBy(_ => EF.Functions.Random())
-            .FirstOrDefaultAsync(ct);
+    {
+        // MongoDB random document selection using $sample aggregation
+        var pipeline = new[]
+        {
+            new BsonDocument("$sample", new BsonDocument("size", 1))
+        };
+        
+        var result = await _collection.Aggregate<Quote>(pipeline, cancellationToken: ct).FirstOrDefaultAsync(ct);
+        return result;
+    }
 }

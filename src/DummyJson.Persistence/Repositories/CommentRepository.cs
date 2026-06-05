@@ -1,43 +1,43 @@
 using DummyJson.Application.Common.Repository;
 using DummyJson.Domain.Comments;
 using DummyJson.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using SharedKernel.Results;
 
 namespace DummyJson.Persistence.Repositories;
 
 /// <summary>
-/// EF Core implementation of <see cref="ICommentRepository"/>.
-/// Inherits all generic CRUD + bulk operations from <see cref="GenericRepository{TEntity,TId}"/>.
+/// MongoDB implementation of <see cref="ICommentRepository"/>.
 /// </summary>
-public sealed class CommentRepository : GenericRepository<Comment, Guid>, ICommentRepository
+public sealed class CommentRepository : MongoRepository<Comment>, ICommentRepository
 {
-    public CommentRepository(AppDbContext context) : base(context) { }
+    public CommentRepository(MongoDbContext context) : base(context) { }
 
     /// <inheritdoc/>
     public async Task<PagedList<Comment>> GetByPostIdAsync(
         Guid postId, int page, int pageSize, CancellationToken ct = default)
     {
-        var query = _dbSet
-            .AsNoTracking()
-            .Where(c => c.PostId == postId);
-
-        var total = await query.CountAsync(ct);
-        var items = await query
-            .OrderByDescending(c => c.CreatedAt)
+        var filter = Builders<Comment>.Filter.Eq(c => c.PostId, postId);
+        
+        var total = await _collection.CountDocumentsAsync(filter, cancellationToken: ct);
+        
+        var items = await _collection.Find(filter)
+            .SortByDescending(c => c.CreatedAt)
             .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .Limit(pageSize)
             .ToListAsync(ct);
 
-        return new PagedList<Comment>(items, page, pageSize, total);
+        return new PagedList<Comment>(items, page, pageSize, (int)total);
     }
 
     /// <inheritdoc/>
-    public async Task<IReadOnlyList<Comment>> GetByUsernameAsync(
-        string username, CancellationToken ct = default)
-        => await _dbSet
-            .AsNoTracking()
-            .Where(c => c.Username == username)
-            .OrderByDescending(c => c.CreatedAt)
+    public async Task<IReadOnlyList<Comment>> GetByUserIdAsync(
+        Guid userId, CancellationToken ct = default)
+    {
+        var filter = Builders<Comment>.Filter.Eq(c => c.UserId, userId);
+        
+        return await _collection.Find(filter)
+            .SortByDescending(c => c.CreatedAt)
             .ToListAsync(ct);
+    }
 }

@@ -28,7 +28,6 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IEntity<Guid>, IAudita
         string userName,
         string email,
         string phoneNumber,
-        string? image,
         string? gender,
         DateOnly? birthDate)
     {
@@ -38,7 +37,6 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IEntity<Guid>, IAudita
         UserName = userName;
         Email = email;
         PhoneNumber = phoneNumber;
-        Image = image;
         Gender = gender;
         BirthDate = birthDate;
         CreatedAt = DateTimeOffset.UtcNow;
@@ -46,10 +44,8 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IEntity<Guid>, IAudita
 
     public string FirstName { get; private set; } = string.Empty;
     public string LastName { get; private set; } = string.Empty;
-    public string? Image { get; private set; }
     public string? Gender { get; private set; }
     public DateOnly? BirthDate { get; private set; }
-    public string? Role { get; private set; } = "user";
 
     // IAuditable
     public DateTimeOffset CreatedAt { get; private set; }
@@ -72,7 +68,6 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IEntity<Guid>, IAudita
         string userName,
         string email,
         string phoneNumber,
-        string? image = null,
         string? gender = null,
         DateOnly? birthDate = null)
     {
@@ -82,27 +77,20 @@ public sealed class ApplicationUser : IdentityUser<Guid>, IEntity<Guid>, IAudita
         if (string.IsNullOrWhiteSpace(userName))
             return Result.Failure<ApplicationUser>(Error.Validation(nameof(userName), "Username cannot be empty."));
 
-        var user = new ApplicationUser(IdGenerator.NewId(), firstName, lastName, userName, email, phoneNumber, image, gender, birthDate);
+        var user = new ApplicationUser(IdGenerator.NewId(), firstName, lastName, userName, email, phoneNumber, gender, birthDate);
         user.RaiseDomainEvent(new UserRegisteredEvent(user.Id, user.Email));
         return Result.Success(user);
     }
 
     // ── Behaviour ─────────────────────────────────────────────────────────────
 
-    public Result UpdateProfile(string firstName, string lastName, string phoneNumber, string? image)
+    public Result UpdateProfile(string firstName, string lastName, string phoneNumber)
     {
         FirstName = firstName;
         LastName = lastName;
         PhoneNumber = phoneNumber;
-        Image = image;
         UpdatedAt = DateTimeOffset.UtcNow;
         return Result.Success();
-    }
-
-    public void AssignRole(string role)
-    {
-        Role = role;
-        UpdatedAt = DateTimeOffset.UtcNow;
     }
 
     public void Delete(string? deletedBy = null)

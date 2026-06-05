@@ -1,14 +1,15 @@
 using DummyJson.Domain.Common.Primitives;
 using DummyJson.Domain.Quotes;
 using SharedKernel.Results;
+using DummyJson.Application.Common.Interfaces;
 
 namespace DummyJson.Application.Common.Repository;
 
 /// <summary>
 /// Strongly-typed repository for the <see cref="Quote"/> aggregate root.
-/// Extends <see cref="IRepository{TEntity,TId}"/> with Quote-specific queries.
+/// Extends <see cref="IMongoRepository{TEntity}"/> with Quote-specific queries.
 /// </summary>
-public interface IQuoteRepository : IRepository<Quote, Guid>
+public interface IQuoteRepository : IMongoRepository<Quote>
 {
     /// <summary>Returns all quotes attributed to the given author.</summary>
     Task<IReadOnlyList<Quote>> GetByAuthorAsync(string author, CancellationToken ct = default);

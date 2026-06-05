@@ -21,11 +21,5 @@ public interface IRepositoryFactory
     /// <summary>Gets the <see cref="ITodoRepository"/>.</summary>
     ITodoRepository Todos { get; }
 
-    /// <summary>Gets the <see cref="IQuoteRepository"/>.</summary>
-    IQuoteRepository Quotes { get; }
-
-    /// <summary>Gets the <see cref="ICommentRepository"/>.</summary>
-    ICommentRepository Comments { get; }
-
     /// <summary>Gets the <see cref="IRecipeRepository"/>.</summary>
 }

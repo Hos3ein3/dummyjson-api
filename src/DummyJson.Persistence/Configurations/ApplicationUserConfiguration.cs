@@ -35,11 +35,7 @@ public sealed class ApplicationUserConfiguration : IEntityTypeConfiguration<Appl
         builder.HasIndex(u => u.Email).IsUnique();
 
         builder.Property(u => u.PhoneNumber).HasMaxLength(30);
-        builder.Property(u => u.Image).HasMaxLength(500);
         builder.Property(u => u.Gender).HasMaxLength(20);
-        builder.Property(u => u.Role).HasMaxLength(50).HasDefaultValue("user");
-
-
 
         // IAuditable
         builder.Property(u => u.CreatedAt).IsRequired();

@@ -10,6 +10,18 @@ using MongoDB.Bson.Serialization;
 
 namespace DummyJson.Persistence.Context;
 
+public class GuidSerializationProvider : IBsonSerializationProvider
+{
+    public IBsonSerializer GetSerializer(Type type)
+    {
+        if (type == typeof(Guid))
+        {
+            return new MongoDB.Bson.Serialization.Serializers.GuidSerializer(MongoDB.Bson.GuidRepresentation.Standard);
+        }
+        return null;
+    }
+}
+
 /// <summary>
 /// MongoDB context — holds typed collection references.
 ///
@@ -29,6 +41,12 @@ public sealed class MongoDbContext
 
     public MongoDbContext(IConfiguration configuration)
     {
+        try
+        {
+            BsonSerializer.RegisterSerializationProvider(new GuidSerializationProvider());
+        }
+        catch { }
+
         // Register base class map for MongoEntity so Id is mapped correctly
         if (!BsonClassMap.IsClassMapRegistered(typeof(DummyJson.Domain.Common.Primitives.MongoEntity)))
         {
@@ -46,6 +64,8 @@ public sealed class MongoDbContext
         ProductImageBsonConfiguration.Register();
         UserAddressBsonConfiguration.Register();
         TagBsonConfiguration.Register();
+        CommentBsonConfiguration.Register();
+        QuoteBsonConfiguration.Register();
 
         var connectionString = configuration.GetConnectionString("MongoDB")
             ?? throw new InvalidOperationException("MongoDB connection string 'MongoDB' is not configured.");
@@ -88,6 +108,12 @@ public sealed class MongoDbContext
     /// <summary>Post Tags.</summary>
     public IMongoCollection<PostTag> PostTags => Database.GetCollection<PostTag>("post_tags");
 
+    /// <summary>Comments.</summary>
+    public IMongoCollection<DummyJson.Domain.Comments.Comment> Comments => Database.GetCollection<DummyJson.Domain.Comments.Comment>("comments");
+
+    /// <summary>Quotes.</summary>
+    public IMongoCollection<DummyJson.Domain.Quotes.Quote> Quotes => Database.GetCollection<DummyJson.Domain.Quotes.Quote>("quotes");
+
     // ── Index creation ────────────────────────────────────────────────────────
 
     private void ConfigureCollections()
@@ -121,6 +147,13 @@ public sealed class MongoDbContext
             var userAddressIndexes = UserAddresses.Indexes;
             userAddressIndexes.CreateOne(new CreateIndexModel<UserAddress>(
                 Builders<UserAddress>.IndexKeys.Ascending(ua => ua.UserId)));
+
+            // Comments - queried by PostId or UserId
+            var commentIndexes = Comments.Indexes;
+            commentIndexes.CreateOne(new CreateIndexModel<DummyJson.Domain.Comments.Comment>(
+                Builders<DummyJson.Domain.Comments.Comment>.IndexKeys.Ascending(c => c.PostId)));
+            commentIndexes.CreateOne(new CreateIndexModel<DummyJson.Domain.Comments.Comment>(
+                Builders<DummyJson.Domain.Comments.Comment>.IndexKeys.Ascending(c => c.UserId)));
         }
         catch (Exception ex)
         {

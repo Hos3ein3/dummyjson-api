@@ -1,3 +1,4 @@
 dotnet ef migrations add "init" --project src/DummyJson.Persistence/DummyJson.Persistence.csproj --startup-project src/DummyJson.API/DummyJson.API.csproj --context AppDbContext
 
 dotnet ef database update --project src/DummyJson.Persistence/DummyJson.Persistence.csproj --startup-project src/DummyJson.API/DummyJson.API.csproj --context AppDbContext
+

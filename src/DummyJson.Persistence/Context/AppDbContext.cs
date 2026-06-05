@@ -27,8 +27,6 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, Applicatio
     public DbSet<Cart> Carts { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Todo> Todos { get; set; }
-    public DbSet<Quote> Quotes { get; set; }
-    public DbSet<Comment> Comments { get; set; }
 
     // ── Moved from MongoDB → PostgreSQL ──────────────────────────────────────
     /// <summary>Products — now in PostgreSQL (moved from MongoDB).</summary>

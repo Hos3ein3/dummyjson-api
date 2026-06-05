@@ -39,10 +39,18 @@ public static class DependencyInjection
         // Fallback open generic validator so Minimal APIs won't crash when a specific validator isn't defined yet
         services.AddTransient(typeof(IValidator<>), typeof(EmptyValidator<>));
 
-        // ── Product Handlers ──────────────────────────────────────────────────
-        services.AddScoped<ICommandHandler<CreateProductCommand, Result<Guid>>, CreateProductCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateProductCommand, Result>, UpdateProductCommandHandler>();
-        services.AddScoped<ICommandHandler<DeleteProductCommand, Result>, DeleteProductCommandHandler>();
+        // ── CQRS Handlers (via Scrutor) ───────────────────────────────────────
+        services.Scan(selector => selector
+            .FromAssemblies(Assembly.GetExecutingAssembly())
+            .AddClasses(filter => filter.AssignableTo(typeof(ICommandHandler<>)))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime()
+            .AddClasses(filter => filter.AssignableTo(typeof(ICommandHandler<,>)))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime()
+            .AddClasses(filter => filter.AssignableTo(typeof(IQueryHandler<,>)))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
 
         // ── Domain Event Handlers (via Scrutor) ───────────────────────────────
         services.Scan(selector => selector

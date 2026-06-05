@@ -76,7 +76,7 @@ public static class AuthEndpoints
                 IsWebClient(context) ? "" : refreshToken,
                 jwtTokenService.GetAccessTokenExpiry(),
                 user.Id, user.UserName!, user.Email ?? "",
-                user.FirstName, user.LastName, user.Image, role);
+                user.FirstName, user.LastName, "", role);
 
             if (isRegistration)
             {

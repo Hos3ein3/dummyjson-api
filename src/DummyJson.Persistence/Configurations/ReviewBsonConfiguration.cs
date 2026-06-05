@@ -55,8 +55,8 @@ public static class ReviewBsonConfiguration
                         .SetElementName("productId")
                         .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
-                    cm.MapMember(r => r.ReviewerName).SetElementName("reviewerName");
-                    cm.MapMember(r => r.ReviewerEmail).SetElementName("reviewerEmail");
+                    cm.MapMember(r => r.UserId).SetElementName("userId")
+                        .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
                     cm.MapMember(r => r.Rating).SetElementName("rating");
                     cm.MapMember(r => r.Comment).SetElementName("comment");
                     cm.MapMember(r => r.Date).SetElementName("date")

@@ -18,14 +18,12 @@ public sealed class ProductReview : MongoEntity
 
     public ProductReview(
         Guid productId,
-        string reviewerName,
-        string reviewerEmail,
+        Guid userId,
         double rating,
         string comment)
     {
         ProductId = productId;
-        ReviewerName = reviewerName;
-        ReviewerEmail = reviewerEmail;
+        UserId = userId;
         Rating = rating;
         Comment = comment;
         Date = DateTimeOffset.UtcNow;
@@ -34,8 +32,8 @@ public sealed class ProductReview : MongoEntity
     /// <summary>References the PostgreSQL <c>Products.Id</c> by value (no FK constraint).</summary>
     public Guid ProductId { get; private set; }
 
-    public string ReviewerName { get; private set; } = string.Empty;
-    public string ReviewerEmail { get; private set; } = string.Empty;
+    /// <summary>References the PostgreSQL <c>AspNetUsers.Id</c> by value.</summary>
+    public Guid UserId { get; private set; }
 
     /// <summary>Star rating 1–5.</summary>
     public double Rating { get; private set; }

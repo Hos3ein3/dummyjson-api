@@ -94,7 +94,6 @@ public sealed class DataSeeder
         await SeedTodosAsync(seedDataPath, cancellationToken);
         await SeedCartsAsync(seedDataPath, cancellationToken);
         await SeedQuotesAsync(seedDataPath, cancellationToken);
-        await SeedCommentsAsync(seedDataPath, cancellationToken);
         await SeedRecipesAsync(seedDataPath, wwwRootPath, seedImages, cancellationToken);
 
         // Relational shadow tables must be seeded FIRST so Products have CategoryIds
@@ -103,6 +102,7 @@ public sealed class DataSeeder
 
         await SeedProductsAsync(seedDataPath, wwwRootPath, seedImages, cancellationToken);
         await SeedPostsAsync(seedDataPath, cancellationToken);
+        await SeedCommentsAsync(seedDataPath, cancellationToken);
 
         _logger.LogInformation("Database seeding completed.");
     }
@@ -191,7 +191,7 @@ public sealed class DataSeeder
         bool seedImages,
         CancellationToken ct)
     {
-        if (await _dbContext.Users.AnyAsync(ct))
+        if (await _dbContext.Users.CountAsync(ct) >=4)
         {
             _logger.LogInformation("Users already seeded, skipping.");
             return;
@@ -209,6 +209,7 @@ public sealed class DataSeeder
         var users = new List<ApplicationUser>(dtos.Count);
         var userRoles = new List<IdentityUserRole<Guid>>();
         var userAddresses = new List<UserAddress>();
+        var userPreferences = new List<UserPreferences>();
         var hasher = new PasswordHasher<ApplicationUser>();
 
         foreach (var dto in dtos)
@@ -228,7 +229,7 @@ public sealed class DataSeeder
 
             var result = ApplicationUser.Create(
                 dto.FirstName, dto.LastName, dto.Username, dto.Email,
-                dto.Phone ?? "", localImage, dto.Gender, parsedBirthDate);
+                dto.Phone ?? "", dto.Gender, parsedBirthDate);
 
             if (result.IsSuccess)
             {
@@ -259,6 +260,10 @@ public sealed class DataSeeder
                         Longitude = dto.Address.Coordinates?.Lng
                     });
                 }
+
+                // Add UserPreferences with Image
+                var prefs = UserPreferences.Create(user.Id, image: localImage);
+                userPreferences.Add(prefs);
             }
         }
 
@@ -277,6 +282,9 @@ public sealed class DataSeeder
 
         if (userAddresses.Count > 0)
             await _mongoContext.UserAddresses.InsertManyAsync(userAddresses, null, ct);
+
+        if (userPreferences.Count > 0)
+            await _mongoContext.UserPreferences.InsertManyAsync(userPreferences, null, ct);
 
         _logger.LogInformation("Seeded {Count} users.", users.Count);
     }
@@ -405,6 +413,9 @@ public sealed class DataSeeder
         var productImages = new List<ProductImage>();
         var productTags = new List<ProductTag>();
         var productReviews = new List<ProductReview>();
+        
+        var userIds = await _dbContext.Users.Select(u => u.Id).ToListAsync(ct);
+        var random = new Random();
 
         foreach (var dto in dtos)
         {
@@ -462,10 +473,10 @@ public sealed class DataSeeder
                 {
                     foreach (var r in dto.Reviews)
                     {
+                        var randomUserId = userIds.Count > 0 ? userIds[random.Next(userIds.Count)] : Guid.Empty;
                         var review = new ProductReview(
                             result.Value.Id,
-                            r.ReviewerName ?? "Anonymous",
-                            r.ReviewerEmail ?? "no-reply@dummyjson.com",
+                            randomUserId,
                             r.Rating,
                             r.Comment ?? string.Empty
                         );
@@ -543,9 +554,10 @@ public sealed class DataSeeder
 
     private async Task SeedQuotesAsync(string path, CancellationToken ct)
     {
-        if (await _dbContext.Quotes.AnyAsync(ct))
+        var count = await _mongoContext.Quotes.CountDocumentsAsync(FilterDefinition<Quote>.Empty, null, ct);
+        if (count > 0)
         {
-            _logger.LogInformation("Quotes already seeded, skipping.");
+            _logger.LogInformation("Quotes already seeded in MongoDB, skipping.");
             return;
         }
 
@@ -561,39 +573,46 @@ public sealed class DataSeeder
         }
 
         SetAuditFields(quotes);
-        await _dbContext.BulkInsertAsync(quotes, new BulkConfig
-        {
-            BatchSize = 500,
-            PreserveInsertOrder = true,
-            SetOutputIdentity = false
-        }, cancellationToken: ct);
+        if (quotes.Count > 0)
+            await _mongoContext.Quotes.InsertManyAsync(quotes, null, ct);
 
-        _logger.LogInformation("Seeded {Count} quotes.", quotes.Count);
+        _logger.LogInformation("Seeded {Count} quotes in MongoDB.", quotes.Count);
     }
 
     // ── Comments ──────────────────────────────────────────────────────────────
 
     private async Task SeedCommentsAsync(string path, CancellationToken ct)
     {
-        if (await _dbContext.Comments.AnyAsync(ct))
+        var count = await _mongoContext.Comments.CountDocumentsAsync(FilterDefinition<Comment>.Empty, null, ct);
+        if (count > 0)
         {
-            _logger.LogInformation("Comments already seeded, skipping.");
+            _logger.LogInformation("Comments already seeded in MongoDB, skipping.");
             return;
         }
 
         var dtos = LoadJson<CommentSeedDto>("comments.json", path, "comments");
         if (dtos is null || dtos.Count == 0) return;
 
+        var userIds = await _dbContext.Users.Select(u => u.Id).ToListAsync(ct);
+        if (userIds.Count == 0)
+        {
+            _logger.LogWarning("No users found to assign comments to. Run user seeding first.");
+            return;
+        }
+
+        var postIds = await _dbContext.Posts.Select(p => p.Id).ToListAsync(ct);
+
+        var random = new Random();
         var comments = new List<Comment>(dtos.Count);
         foreach (var dto in dtos)
         {
-            // PostId cannot be correlated during seeding (DummyJSON uses integer IDs);
-            // we leave it null so the row is still queryable by username / body.
+            var randomUserId = userIds[random.Next(userIds.Count)];
+            var randomPostId = postIds.Count > 0 ? (Guid?)postIds[random.Next(postIds.Count)] : null;
+            
             var result = Comment.Create(
                 dto.Body,
-                postId: null,
-                username: dto.User?.Username ?? "",
-                fullName: dto.User?.FullName ?? "",
+                postId: randomPostId,
+                userId: randomUserId,
                 likes: dto.Likes);
 
             if (result.IsSuccess)
@@ -601,14 +620,10 @@ public sealed class DataSeeder
         }
 
         SetAuditFields(comments);
-        await _dbContext.BulkInsertAsync(comments, new BulkConfig
-        {
-            BatchSize = 500,
-            PreserveInsertOrder = true,
-            SetOutputIdentity = false
-        }, cancellationToken: ct);
+        if (comments.Count > 0)
+            await _mongoContext.Comments.InsertManyAsync(comments, null, ct);
 
-        _logger.LogInformation("Seeded {Count} comments.", comments.Count);
+        _logger.LogInformation("Seeded {Count} comments in MongoDB.", comments.Count);
     }
 
     // ── Recipes ───────────────────────────────────────────────────────────────

@@ -13,23 +13,26 @@ public sealed class UserPreferences : MongoEntity
     public string Theme { get; private set; } = "Light";
     public string Language { get; private set; } = "en-US";
     public bool ReceiveNewsletters { get; private set; } = true;
+    public string? Image { get; private set; }
 
     private UserPreferences() { }
 
-    public static UserPreferences Create(Guid userId, string theme = "Light", string language = "en-US")
+    public static UserPreferences Create(Guid userId, string theme = "Light", string language = "en-US", string? image = null)
     {
         return new UserPreferences
         {
             UserId = userId,
             Theme = theme,
-            Language = language
+            Language = language,
+            Image = image
         };
     }
 
-    public void UpdatePreferences(string theme, string language, bool receiveNewsletters)
+    public void UpdatePreferences(string theme, string language, bool receiveNewsletters, string? image)
     {
         Theme = theme;
         Language = language;
         ReceiveNewsletters = receiveNewsletters;
+        Image = image;
     }
 }
