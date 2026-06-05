@@ -1,4 +1,4 @@
-name: DummyJson API CI-CD
+name: DummyJson API Deploy
 
 on:
   push:
@@ -11,53 +11,54 @@ jobs:
   deploy:
     runs-on: self-hosted
 
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set lowercase owner
-        run: echo "OWNER_LC=${OWNER,,}" >> $GITHUB_ENV
-        env:
-          OWNER: ${{ github.repository_owner }}
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
 
-      - name: Login to GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Ensure api folder exists
+        run: |
+          sudo mkdir -p "$DEPLOY_PATH"
 
-      - name: Build Docker image
-        run: docker build -t ghcr.io/${{ env.OWNER_LC }}/dummyjson-api:latest -f Dockerfile .
+      - name: Restore API
+        run: |
+          dotnet restore ./src/DummyJson.API/DummyJson.API.csproj
 
-      - name: Push Docker image
-        run: docker push ghcr.io/${{ env.OWNER_LC }}/dummyjson-api:latest
+      - name: Build API
+        run: |
+          dotnet build ./src/DummyJson.API/DummyJson.API.csproj -c Release --no-restore
 
-      - name: Ensure deploy folder exists
-        run: sudo mkdir -p "$DEPLOY_PATH"
+      - name: Clean api folder except env and compose
+        run: |
+          sudo find "$DEPLOY_PATH" -mindepth 1 \
+            ! -name '.env' \
+            ! -name 'docker-compose.yml' \
+            -exec rm -rf {} +
+
+      - name: Publish directly into api root
+        run: |
+          sudo dotnet publish ./src/DummyJson.API/DummyJson.API.csproj \
+            -c Release \
+            -o "$DEPLOY_PATH" \
+            --no-build
 
       - name: Copy docker-compose
-        run: sudo cp docker-compose.yml "$DEPLOY_PATH/docker-compose.yml"
+        run: |
+          sudo cp docker-compose.yml "$DEPLOY_PATH/docker-compose.yml"
 
       - name: Copy .env
         run: |
           sudo cp .env "$DEPLOY_PATH/.env"
-          sudo sed -i "s/^GITHUB_REPOSITORY_OWNER=.*/GITHUB_REPOSITORY_OWNER=${{ env.OWNER_LC }}/" "$DEPLOY_PATH/.env"
-
-      - name: Copy API wwwroot
-        run: |
-          if [ -d "src/DummyJson.API/wwwroot" ]; then
-            sudo rm -rf "$DEPLOY_PATH/wwwroot"
-            sudo cp -r src/DummyJson.API/wwwroot "$DEPLOY_PATH/wwwroot"
-          fi
-
-      - name: Pull latest image
-        run: docker pull ghcr.io/${{ env.OWNER_LC }}/dummyjson-api:latest
 
       - name: Run docker compose
         run: |
           cd "$DEPLOY_PATH"
           docker compose up -d
 
-      - name: Cleanup images
-        run: docker image prune -f
+      - name: Show deployed files
+        run: |
+          ls -la "$DEPLOY_PATH"

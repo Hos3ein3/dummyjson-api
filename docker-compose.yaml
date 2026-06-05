@@ -1,8 +1,10 @@
 services:
   dummyjson-api:
-    image: ghcr.io/hos3ein3/dummyjson-api:${IMAGE_TAG:-latest}
+    image: mcr.microsoft.com/dotnet/aspnet:9.0
     container_name: dummyjson-api
     restart: unless-stopped
+    working_dir: /app
+    command: ["dotnet", "DummyJson.API.dll"]
     env_file:
       - .env
     environment:
@@ -10,6 +12,8 @@ services:
       ASPNETCORE_URLS: http://+:8080
     ports:
       - "8080:8080"
+    volumes:
+      - /wwwroot/dummyjson/api:/app
     networks:
       - homelab-docker-network
 
