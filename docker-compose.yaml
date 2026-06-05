@@ -11,7 +11,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
     ports:
-      - "8087:8080"
+      - "8088:8080"
     volumes:
       - /home/homelabadmin/wwwroot/dummyjson/api:/app
     networks:
