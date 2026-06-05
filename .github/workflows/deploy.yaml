@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  DEPLOY_PATH: /wwwroot/dummyjson/api
+  DEPLOY_PATH: /home/homelabadmin/wwwroot/dummyjson/api
   DOTNET_INSTALL_DIR: /home/homelabadmin/.dotnet
 
 jobs:

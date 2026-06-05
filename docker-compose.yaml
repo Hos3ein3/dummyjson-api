@@ -13,7 +13,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /wwwroot/dummyjson/api:/app
+      - /home/homelabadmin/wwwroot/dummyjson/api:/app
     networks:
       - homelab-docker-network
 
