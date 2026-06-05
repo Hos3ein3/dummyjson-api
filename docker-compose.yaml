@@ -10,8 +10,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
-    ports:
-      - "8088:8080"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
     volumes:
       - /home/homelabadmin/wwwroot/dummyjson/api:/app
     networks:
@@ -20,4 +19,3 @@ services:
 networks:
   homelab-docker-network:
     external: true
-    name: homelab-docker-network
