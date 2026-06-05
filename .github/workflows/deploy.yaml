@@ -29,10 +29,14 @@ jobs:
       - name: Check dotnet
         run: dotnet --info
 
-      - name: Ensure api folder exists
+      - name: Debug permissions
         run: |
-          mkdir -p "$DEPLOY_PATH"
-          ls -ld "$DEPLOY_PATH"
+          whoami
+          pwd
+          ls -ld /home/homelabadmin
+          ls -ld /home/homelabadmin/wwwroot
+          ls -ld /home/homelabadmin/wwwroot/dummyjson
+          ls -ld /home/homelabadmin/wwwroot/dummyjson/api
 
       - name: Restore API
         run: |
@@ -42,27 +46,20 @@ jobs:
         run: |
           dotnet build ./src/DummyJson.API/DummyJson.API.csproj -c Release --no-restore
 
-      - name: Clean api folder except env and compose
-        run: |
-          sudo find "$DEPLOY_PATH" -mindepth 1 \
-            ! -name '.env' \
-            ! -name 'docker-compose.yml' \
-            -exec rm -rf {} +
-
       - name: Publish directly into api root
         run: |
-          sudo "$DOTNET_INSTALL_DIR/dotnet" publish ./src/DummyJson.API/DummyJson.API.csproj \
+          "$DOTNET_INSTALL_DIR/dotnet" publish ./src/DummyJson.API/DummyJson.API.csproj \
             -c Release \
             -o "$DEPLOY_PATH" \
             --no-build
 
       - name: Copy docker-compose
         run: |
-          sudo cp docker-compose.yml "$DEPLOY_PATH/docker-compose.yml"
+          cp docker-compose.yml "$DEPLOY_PATH/docker-compose.yml"
 
       - name: Copy .env
         run: |
-          sudo cp .env "$DEPLOY_PATH/.env"
+          cp .env "$DEPLOY_PATH/.env"
 
       - name: Run docker compose
         run: |
