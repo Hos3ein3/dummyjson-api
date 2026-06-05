@@ -1,49 +1,19 @@
-version: '3.8'
-
 services:
-  dummyjson.api:
-    image: ghcr.io/${GITHUB_REPOSITORY:-dummyjson}/dummyjson.api:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "5070:8080"
+  dummyjson-api:
+    image: ghcr.io/hos3ein3/dummyjson-api:${IMAGE_TAG:-latest}
+    container_name: dummyjson-api
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgreSQL=Host=postgres;Port=5432;Database=DummyJsonDb;Username=postgres;Password=postgres;Include Error Detail=true
-      - ConnectionStrings__MongoDB=mongodb://mongo:27017/DummyJsonDb?authSource=admin
-      - ConnectionStrings__Redis=redis:6379
-      - JwtSettings__Secret=CHANGE_ME_TO_A_VERY_LONG_SECURE_SECRET_KEY_AT_LEAST_32_CHARS
-      - FeatureManagement__UseMongoDbForProducts=true
-      - SeedDatabase=true
-    depends_on:
-      - postgres
-      - mongo
-      - redis
-
-  postgres:
-    image: postgres:15
-    environment:
-      - POSTGRES_DB=DummyJsonDb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
     ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      - "8080:8080"
+    networks:
+      - homelab-docker-network
 
-  mongo:
-    image: mongo:6
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodata:/data/db
-
-  redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
-
-volumes:
-  pgdata:
-  mongodata:
+networks:
+  homelab-docker-network:
+    external: true
+    name: homelab-docker-network
