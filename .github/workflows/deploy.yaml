@@ -31,7 +31,8 @@ jobs:
 
       - name: Ensure api folder exists
         run: |
-          sudo mkdir -p "$DEPLOY_PATH"
+          mkdir -p "$DEPLOY_PATH"
+          ls -ld "$DEPLOY_PATH"
 
       - name: Restore API
         run: |
