@@ -117,13 +117,16 @@ try
         // .AddNpgSql(builder.Configuration.GetConnectionString("PostgreSQL") ?? "", name: "PostgreSQL")
         // .AddRedis(builder.Configuration.GetConnectionString("Redis") ?? "", name: "Redis");
     
-    builder.Services.AddHealthChecksUI(options =>
+    if (builder.Configuration.GetValue<bool>("FeatureManagement:EnableHealthChecksUIAutoRequest"))
     {
-        options.SetEvaluationTimeInSeconds(15);
-        options.MaximumHistoryEntriesPerEndpoint(60);
-        options.SetApiMaxActiveRequests(1);
-        options.AddHealthCheckEndpoint("API Health", "/health");
-    }).AddInMemoryStorage();
+        builder.Services.AddHealthChecksUI(options =>
+        {
+            options.SetEvaluationTimeInSeconds(15);
+            options.MaximumHistoryEntriesPerEndpoint(60);
+            options.SetApiMaxActiveRequests(1);
+            options.AddHealthCheckEndpoint("API Health", "/health");
+        }).AddInMemoryStorage();
+    }
 
     // ── Rate Limiting ─────────────────────────────────────────────────────────
     builder.Services.AddCustomRateLimiting();
@@ -154,6 +157,13 @@ try
     #pragma warning restore EXTEXP0018
 
     var app = builder.Build();
+
+    // ── Log Connection Strings ────────────────────────────────────────────────
+    Log.Information("Connection Strings:");
+    Log.Information("  SQL (PostgreSQL): {Sql}", app.Configuration.GetConnectionString("PostgreSQL"));
+    Log.Information("  SQL (SqlServer): {Sql}", app.Configuration.GetConnectionString("SqlServer"));
+    Log.Information("  MongoDB: {Mongo}", app.Configuration.GetConnectionString("MongoDB"));
+    Log.Information("  Redis: {Redis}", app.Configuration.GetConnectionString("Redis"));
 
     // ── Seed Data ─────────────────────────────────────────────────────────────
     if (app.Configuration.GetValue<bool>("SeedDatabase"))
@@ -256,7 +266,11 @@ try
         Predicate = _ => true,
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
-    app.MapHealthChecksUI(options => options.UIPath = "/health-ui");
+    
+    if (app.Configuration.GetValue<bool>("FeatureManagement:EnableHealthChecksUIAutoRequest"))
+    {
+        app.MapHealthChecksUI(options => options.UIPath = "/health-ui");
+    }
 
     Log.Information("DummyJson API started. Scalar UI: https://localhost:*/scalar");
     Log.Information("env:{0}", app.Environment.EnvironmentName);
