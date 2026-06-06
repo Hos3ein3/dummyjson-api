@@ -187,8 +187,8 @@ try
     app.UseExceptionHandler(); // Maps to IExceptionHandler / ProblemDetails
     app.UseMiddleware<RequestContextMiddleware>();
     app.UseSerilogRequestLogging();
-    app.UseHttpsRedirection();
     app.UseCors();
+    app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseRateLimiter();
