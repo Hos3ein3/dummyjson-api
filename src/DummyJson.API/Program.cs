@@ -184,6 +184,7 @@ try
     }
 
     // ── Pipeline ──────────────────────────────────────────────────────────────
+    app.UseForwardedHeaders(); // Applies X-Forwarded-Proto so ASP.NET knows it's HTTPS
     app.UseExceptionHandler(); // Maps to IExceptionHandler / ProblemDetails
     app.UseMiddleware<RequestContextMiddleware>();
     app.UseSerilogRequestLogging();
