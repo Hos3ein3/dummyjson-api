@@ -40,6 +40,15 @@ try
               .WriteTo.Console()
               .WriteTo.Seq(context.Configuration["Seq:ServerUrl"] ?? "http://localhost:5341"));
 
+    // ── Forwarded Headers (for Docker Reverse Proxy) ──────────────────────────
+    builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+        // Clear so it trusts the Docker network proxy (Nginx/Traefik)
+        options.KnownNetworks.Clear();
+        options.KnownProxies.Clear();
+    });
+
     // ── Layers ────────────────────────────────────────────────────────────────
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
@@ -75,6 +84,7 @@ try
             document.Info.Title = "DummyJson API";
             document.Info.Description = "Clean Architecture + DDD backend for DummyJSON data.";
             document.Info.Version = "v1";
+            document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer> { new Microsoft.OpenApi.Models.OpenApiServer { Url = "/" } };
             return Task.CompletedTask;
         });
     });
@@ -86,6 +96,7 @@ try
             document.Info.Title = "DummyJson API";
             document.Info.Description = "Clean Architecture + DDD backend for DummyJSON data.";
             document.Info.Version = "v2";
+            document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer> { new Microsoft.OpenApi.Models.OpenApiServer { Url = "/" } };
             return Task.CompletedTask;
         });
     });
