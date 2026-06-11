@@ -82,26 +82,30 @@ public class GenericRepository<TEntity, TId> : IRepository<TEntity, TId>
         return new PagedList<TEntity>(items, page, pageSize, total);
     }
 
+    
     public virtual async Task<PagedList<TEntity>> GetPagedResultByOffsetAsync(
         int skip,
         int limit,
         CancellationToken cancellationToken = default)
     {
         var total = await _dbSet.CountAsync(cancellationToken);
-
-        // If limit == -1 or skip == -1 => return all records, no pagination
-        if (limit == -1 || skip == -1)
+        int page = 1;
+        int pageSize = total;
+        // "All records" mode
+        if (skip == -1 && limit == -1)
         {
             var allItems = await _dbSet
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
-            // Choose a convention for page/pageSize when "all"
-            var page = 1;
-            var pageSize = total; // everything on a single page
+           
 
             return new PagedList<TEntity>(allItems, page, pageSize, total);
         }
+
+        // Normalize invalid values
+        if (skip < 0) skip = 0;
+        if (limit <= 0) limit = 10; // default page size
 
         var items = await _dbSet
             .AsNoTracking()
@@ -109,12 +113,13 @@ public class GenericRepository<TEntity, TId> : IRepository<TEntity, TId>
             .Take(limit)
             .ToListAsync(cancellationToken);
 
-        var pageSizeDerived = limit;
-        var pageDerived = (skip / pageSizeDerived) + 1;
+        // Derive page/pageSize from skip/limit in the same way
+         pageSize = limit;
+         page = (skip / pageSize) + 1;
 
-        return new PagedList<TEntity>(items, pageDerived, pageSizeDerived, total);
+        return new PagedList<TEntity>(items, page, pageSize, total);
     }
-
+    
     public virtual async Task<int> CountAsync(CancellationToken cancellationToken = default)
         => await _dbSet.CountAsync(cancellationToken);
 

@@ -16,7 +16,15 @@ public static class ProductEndpoints
     {
         var group = app.MapGroup("/api/v1/products").WithTags("Products");
 
-        group.MapGet("/", async (
+        
+
+        group.MapGet("/", async (int? skip,int? limit,string? category,string? search, IDispatcher dispatcher,HttpContext context, CancellationToken ct) =>
+        {
+            var query = new GetProductsQuery(skip ?? 0, limit ?? 30, category, search);
+            var result = await dispatcher.QueryAsync<GetProductsQuery,Result<PagedList<ProductDto>>>(query, ct);
+            return result.ToIResult(context);
+        });
+        group.MapGet("/GetPaged", async (
             int? page,
             int? pageSize,
             string? category,
@@ -25,11 +33,10 @@ public static class ProductEndpoints
             HttpContext context,
             CancellationToken ct) =>
         {
-            var query = new GetProductsQuery(page ?? 1, pageSize ?? 30, category, search);
-            var result = await dispatcher.QueryAsync<GetProductsQuery, Result<PagedList<ProductDto>>>(query, ct);
+            var query = new GetProductsPagedQuery(page ?? 1, pageSize ?? 30, category, search);
+            var result = await dispatcher.QueryAsync<GetProductsPagedQuery, Result<PagedList<ProductDto>>>(query, ct);
             return result.ToIResult(context);
         });
-
         group.MapGet("/{id:guid}", async (
             Guid id,
             IDispatcher dispatcher,

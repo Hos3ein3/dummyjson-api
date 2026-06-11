@@ -5,8 +5,11 @@ namespace DummyJson.Application.Products.Queries;
 
 // ── Queries ──────────────────────────────────────────────────────────────────
 
-public sealed record GetProductsQuery(int Page = 1, int PageSize = 30, string? Category = null, string? Search = null)
+public sealed record GetProductsPagedQuery(int Page = 1, int PageSize = 30, string? Category = null, string? Search = null)
     : IQuery<Result<PagedList<ProductDto>>>;
+
+public sealed record GetProductsQuery(int skip,int limit,string? Category = null, string? Search = null)
+    :IQuery<Result<PagedList<ProductDto>>>;
 
 public sealed record GetProductByIdQuery(Guid Id)
     : IQuery<Result<ProductDto>>;

@@ -23,8 +23,22 @@ private readonly IProductRepository _repo;
         _queryRepo = queryRepo;
         _repo = repo;
     }
-
     public async Task<Result<PagedList<ProductDto>>> HandleAsync(GetProductsQuery request, CancellationToken cancellationToken)
+    {
+        var result = await _repo.GetPagedResultByOffsetAsync(request.skip, request.limit, cancellationToken);
+
+        return Result.Success(result).Map(paged =>
+        {
+            var items = paged.Items.Select(_repo.MapToDto).ToList();
+            return new PagedList<ProductDto>(
+                items,
+                paged.Page,
+                paged.PageSize,
+                paged.TotalCount);
+        });
+    }
+
+    public async Task<Result<PagedList<ProductDto>>> HandleAsync(GetProductsPagedQuery request, CancellationToken cancellationToken)
     {
         var result = await _repo.GetPagedResultAsync(request.Page, request.PageSize, cancellationToken);
 

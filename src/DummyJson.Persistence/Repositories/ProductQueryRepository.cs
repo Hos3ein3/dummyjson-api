@@ -21,7 +21,7 @@ public sealed class ProductQueryRepository : IProductQueryRepository
         _context = context;
     }
 
-    public async Task<PagedList<ProductDto>> GetProductsAsync(GetProductsQuery request, CancellationToken cancellationToken = default)
+    public async Task<PagedList<ProductDto>> GetProductsAsync(GetProductsPagedQuery request, CancellationToken cancellationToken = default)
     {
         var query = _context.Set<Product>()
             .Include(p => p.Category)
