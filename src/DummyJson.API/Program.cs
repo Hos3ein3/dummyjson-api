@@ -77,29 +77,7 @@ try
     builder.Services.AddValidatorsFromAssemblyContaining<DummyJson.Application.Products.Commands.CreateProductCommandValidator>();
 
     // ── OpenAPI / Scalar ──────────────────────────────────────────────────────
-    builder.Services.AddOpenApi("v1", options =>
-    {
-        options.AddDocumentTransformer((document, _, _) =>
-        {
-            document.Info.Title = "DummyJson API";
-            document.Info.Description = "Clean Architecture + DDD backend for DummyJSON data.";
-            document.Info.Version = "v1";
-            //document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer> { new Microsoft.OpenApi.Models.OpenApiServer { Url = "/" } };
-            return Task.CompletedTask;
-        });
-    });
-
-    builder.Services.AddOpenApi("v2", options =>
-    {
-        options.AddDocumentTransformer((document, _, _) =>
-        {
-            document.Info.Title = "DummyJson API";
-            document.Info.Description = "Clean Architecture + DDD backend for DummyJSON data.";
-            document.Info.Version = "v2";
-            //document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer> { new Microsoft.OpenApi.Models.OpenApiServer { Url = "/" } };
-            return Task.CompletedTask;
-        });
-    });
+    builder.Services.AddDocumentsWithVersioning();
 
     // ── CORS ──────────────────────────────────────────────────────────────────
     builder.Services.AddCors(options =>
