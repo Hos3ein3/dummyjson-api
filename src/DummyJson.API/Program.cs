@@ -77,7 +77,7 @@ try
     builder.Services.AddValidatorsFromAssemblyContaining<DummyJson.Application.Products.Commands.CreateProductCommandValidator>();
 
     // ── OpenAPI / Scalar ──────────────────────────────────────────────────────
-    builder.Services.AddDocumentsWithVersioning();
+    builder.Services.AddDocumentsWithVersioning(builder.Environment);
 
     // ── CORS ──────────────────────────────────────────────────────────────────
     builder.Services.AddCors(options =>

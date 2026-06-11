@@ -2,7 +2,7 @@ namespace DummyJson.API.Extensions;
 
 public static class ScalarUiDocumentExtensions
 {
-    public static IServiceCollection AddDocumentsWithVersioning(this IServiceCollection services)
+    public static IServiceCollection AddDocumentsWithVersioning(this IServiceCollection services,IWebHostEnvironment env)
     {
 services.AddOpenApi("v1", options =>
 {
@@ -19,13 +19,19 @@ services.AddOpenApi("v1", options =>
         var scheme = request?.Scheme ?? "https";
         var host = request?.Host.Value ?? "dummyjson-api.behzadifard.me";
 
-        document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer>
-        { new()
+
+            document.Servers =!env.IsDevelopment() ? new List<Microsoft.OpenApi.Models.OpenApiServer>
+            { new()
+                {
+                    Url = "https://dummyjson-api.behzadifard.me"
+                },
+                new() { Url = $"{scheme}://{host}" }
+            } :  new List<Microsoft.OpenApi.Models.OpenApiServer>
             {
-                Url = "https://dummyjson-api.behzadifard.me"
-            },
-            new() { Url = $"{scheme}://{host}" }
-        };
+                new() { Url = $"{scheme}://{host}" }
+            };
+        
+       
 
         return Task.CompletedTask;
     });
@@ -46,14 +52,18 @@ services.AddOpenApi("v2", options =>
         var scheme = request?.Scheme ?? "https";
         var host = request?.Host.Value ?? "dummyjson-api.behzadifard.me";
 
-        document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer>
-        {
-            new()
+        
+        document.Servers =!env.IsDevelopment() ? new List<Microsoft.OpenApi.Models.OpenApiServer>
+        { new()
             {
                 Url = "https://dummyjson-api.behzadifard.me"
             },
             new() { Url = $"{scheme}://{host}" }
+        } :  new List<Microsoft.OpenApi.Models.OpenApiServer>
+        {
+            new() { Url = $"{scheme}://{host}" }
         };
+
 
         return Task.CompletedTask;
         return Task.CompletedTask;
