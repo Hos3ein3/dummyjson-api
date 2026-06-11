@@ -11,6 +11,8 @@ public sealed record PagedList<T>(
 {
     public int CurrentCount => Items.Count;
     public int Total => TotalCount;
+
+    // offset-based view, consistent with EF Skip/Take
     public int Skip => (Page - 1) * PageSize;
     public int Limit => PageSize;
 

@@ -88,6 +88,8 @@ public static class DependencyInjection
         services.AddScoped<IUserPreferencesRepository, UserPreferencesRepository>();
         services.AddScoped<IProductReviewRepository, ProductReviewRepository>();
         services.AddScoped<IProductQueryRepository, ProductQueryRepository>();
+        services.AddScoped<IProductRepository,ProductRepository>();
+        
 
         // ── Data Seeder ─────────────────────────────────────────────────────────── & Auth
         services.AddScoped<DataSeeder>();

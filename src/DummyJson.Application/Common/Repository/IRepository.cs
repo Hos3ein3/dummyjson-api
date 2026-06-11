@@ -26,8 +26,15 @@ public interface IRepository<TEntity, TId>
     Task<IReadOnlyList<TEntity>> GetPagedAsync(int page, int pageSize, CancellationToken cancellationToken = default);
 
     /// <summary>Returns a structured PagedList of entities.</summary>
-    Task<PagedList<TEntity>> GetPagedResultAsync(int page, int pageSize, CancellationToken cancellationToken = default);
-
+    Task<PagedList<TEntity>> GetPagedResultAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default);
+    Task<PagedList<TEntity>> GetPagedResultByOffsetAsync(
+        int skip,
+        int limit,
+        CancellationToken cancellationToken = default);
+    
     /// <summary>Returns total count of entities.</summary>
     Task<int> CountAsync(CancellationToken cancellationToken = default);
 

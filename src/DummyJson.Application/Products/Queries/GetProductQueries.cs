@@ -33,3 +33,4 @@ public sealed record ProductDto(
     string AvailabilityStatus,
     DateTimeOffset CreatedAt,
     DateTimeOffset? UpdatedAt);
+

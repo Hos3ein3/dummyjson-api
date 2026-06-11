@@ -48,12 +48,54 @@ public class GenericRepository<TEntity, TId> : IRepository<TEntity, TId>
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-    public virtual async Task<PagedList<TEntity>> GetPagedResultAsync(
-        int page, int pageSize, CancellationToken cancellationToken = default)
+    public virtual Task<PagedList<TEntity>> GetPagedResultAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        // If client wants "all", normalize to skip/limit = -1
+        if (page == -1 && pageSize == -1)
+        {
+            return GetPagedResultByOffsetAsync(-1, -1, cancellationToken);
+        }
+
+        var skip = (page - 1) * pageSize;
+        var limit = pageSize;
+
+        return GetPagedResultByOffsetAsync(skip, limit, cancellationToken);
+    }
+
+    public virtual async Task<PagedList<TEntity>> GetPagedResultByOffsetAsync(
+        int skip,
+        int limit,
+        CancellationToken cancellationToken = default)
     {
         var total = await _dbSet.CountAsync(cancellationToken);
-        var items = await GetPagedAsync(page, pageSize, cancellationToken);
-        return new PagedList<TEntity>(items, page, pageSize, total);
+
+        // If limit == -1 or skip == -1 => return all records, no pagination
+        if (limit == -1 || skip == -1)
+        {
+            var allItems = await _dbSet
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+
+            // Choose a convention for page/pageSize when "all"
+            var page = 1;
+            var pageSize = total; // everything on a single page
+
+            return new PagedList<TEntity>(allItems, page, pageSize, total);
+        }
+
+        var items = await _dbSet
+            .AsNoTracking()
+            .Skip(skip)
+            .Take(limit)
+            .ToListAsync(cancellationToken);
+
+        var pageSizeDerived = limit;
+        var pageDerived = (skip / pageSizeDerived) + 1;
+
+        return new PagedList<TEntity>(items, pageDerived, pageSizeDerived, total);
     }
 
     public virtual async Task<int> CountAsync(CancellationToken cancellationToken = default)

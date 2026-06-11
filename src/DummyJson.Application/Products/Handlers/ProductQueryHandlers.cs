@@ -5,6 +5,7 @@ using SharedKernel.Results;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using DummyJson.Application.Common.Repository;
 
 namespace DummyJson.Application.Products.Handlers;
 
@@ -14,16 +15,28 @@ public sealed class ProductQueryHandlers :
     IQueryHandler<GetProductCategoriesQuery, Result<IReadOnlyList<string>>>
 {
     private readonly IProductQueryRepository _queryRepo;
+    
+private readonly IProductRepository _repo;
 
-    public ProductQueryHandlers(IProductQueryRepository queryRepo)
+    public ProductQueryHandlers(IProductQueryRepository queryRepo, IProductRepository repo)
     {
         _queryRepo = queryRepo;
+        _repo = repo;
     }
 
     public async Task<Result<PagedList<ProductDto>>> HandleAsync(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        var result = await _queryRepo.GetProductsAsync(request, cancellationToken);
-        return Result.Success(result);
+        var result = await _repo.GetPagedResultAsync(request.Page, request.PageSize, cancellationToken);
+
+        return Result.Success(result).Map(paged =>
+        {
+            var items = paged.Items.Select(_repo.MapToDto).ToList();
+            return new PagedList<ProductDto>(
+                items,
+                paged.Page,
+                paged.PageSize,
+                paged.TotalCount);
+        });
     }
 
     public async Task<Result<ProductDto>> HandleAsync(GetProductByIdQuery request, CancellationToken cancellationToken)
