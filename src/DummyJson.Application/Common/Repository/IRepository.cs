@@ -22,6 +22,8 @@ public interface IRepository<TEntity, TId>
     /// <summary>Returns all entities (not deleted if soft-delete is applied).</summary>
     Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
 
+    Task<PagedList<TEntity>> GetAllAsPagedResultAsync(CancellationToken ct=default);
+
     /// <summary>Returns a paged list of entities.</summary>
     Task<IReadOnlyList<TEntity>> GetPagedAsync(int page, int pageSize, CancellationToken cancellationToken = default);
 

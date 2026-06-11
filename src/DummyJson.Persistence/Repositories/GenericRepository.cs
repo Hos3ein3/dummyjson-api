@@ -41,6 +41,16 @@ public class GenericRepository<TEntity, TId> : IRepository<TEntity, TId>
     public virtual async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
         => await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
 
+    public async Task<PagedList<TEntity>> GetAllAsPagedResultAsync(CancellationToken ct)
+    {
+        var allItems = await _dbSet
+            .AsNoTracking()
+            .ToListAsync(ct);
+
+        var total = allItems.Count;
+
+        return new PagedList<TEntity>(allItems, Page: 1, PageSize: total, TotalCount: total);
+    }
     public virtual async Task<IReadOnlyList<TEntity>> GetPagedAsync(
         int page, int pageSize, CancellationToken cancellationToken = default)
         => await _dbSet.AsNoTracking()
@@ -48,21 +58,28 @@ public class GenericRepository<TEntity, TId> : IRepository<TEntity, TId>
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-    public virtual Task<PagedList<TEntity>> GetPagedResultAsync(
+    public virtual async Task<PagedList<TEntity>> GetPagedResultAsync(
         int page,
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        // If client wants "all", normalize to skip/limit = -1
         if (page == -1 && pageSize == -1)
-        {
-            return GetPagedResultByOffsetAsync(-1, -1, cancellationToken);
-        }
+            return await GetAllAsPagedResultAsync(cancellationToken);
+
+        if (page <= 0) page = 1;
+        if (pageSize <= 0) pageSize = 10; // default
 
         var skip = (page - 1) * pageSize;
-        var limit = pageSize;
 
-        return GetPagedResultByOffsetAsync(skip, limit, cancellationToken);
+        var total = await _dbSet.CountAsync(cancellationToken);
+
+        var items = await _dbSet
+            .AsNoTracking()
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedList<TEntity>(items, page, pageSize, total);
     }
 
     public virtual async Task<PagedList<TEntity>> GetPagedResultByOffsetAsync(
