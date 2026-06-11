@@ -20,7 +20,10 @@ services.AddOpenApi("v1", options =>
         var host = request?.Host.Value ?? "dummyjson-api.behzadifard.me";
 
         document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer>
-        {
+        { new()
+            {
+                Url = "https://dummyjson-api.behzadifard.me"
+            },
             new() { Url = $"{scheme}://{host}" }
         };
 
@@ -45,6 +48,10 @@ services.AddOpenApi("v2", options =>
 
         document.Servers = new List<Microsoft.OpenApi.Models.OpenApiServer>
         {
+            new()
+            {
+                Url = "https://dummyjson-api.behzadifard.me"
+            },
             new() { Url = $"{scheme}://{host}" }
         };
 

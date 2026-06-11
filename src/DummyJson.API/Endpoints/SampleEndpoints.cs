@@ -17,6 +17,10 @@ public static class SampleEndpoints
     public static void MapSampleEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/v1/samples").WithTags("Samples");
+        app.MapGet("/debug-scheme", (HttpRequest req) =>
+        {
+            return Results.Ok(new { req.Scheme, Host = req.Host.Value });
+        });
 
         group.MapGet("/result-extensions", async () =>
         {
